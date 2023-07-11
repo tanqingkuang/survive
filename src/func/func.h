@@ -1,0 +1,1 @@
+#define MY_STR "I'm coming"

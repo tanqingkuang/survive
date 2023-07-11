@@ -1,4 +1,14 @@
 cmake_minimum_required(VERSION 3.24)
 project(survive)
 
-add_executable(survive src/project1/main.c src/func/func.c)
+# add_executable(survive src/project1/main.c src/func/func.c)
+
+set(APP_PROJECT_DIR ${PROJECT_SOURCE_DIR}/src/project1)
+
+add_subdirectory(${APP_PROJECT_DIR})
+
+link_directories(${APP_PROJECT_DIR})
+
+add_executable(survive ${PROJECT_SOURCE_DIR}/src/stub.c)
+
+target_link_libraries(survive project)
