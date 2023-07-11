@@ -1,7 +1,9 @@
 #include "stdio.h"
 
+void func(void);
+
 int main(void) {
-    printf("Hello world\n");
+    func();
     printf("project 2 I'm coming\n");
     return 0;
 }
