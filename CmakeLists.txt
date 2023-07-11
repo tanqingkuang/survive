@@ -1,0 +1,4 @@
+cmake_minimum_required(VERSION 3.24)
+project(survive)
+
+add_executable(survive src/project2/main.c)
