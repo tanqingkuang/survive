@@ -1,0 +1,20 @@
+{
+	"options": {
+		"cwd": "${workspaceFolder}/build"
+	},
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "MyBuild",
+			"command": "C:\\mingw64\\bin\\gcc.exe",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-g",
+				"${file}",
+				"-o",
+				"${workspaceFolder}/build/survive.exe"
+			],
+		},
+	],
+	"version": "2.0.0"
+}
