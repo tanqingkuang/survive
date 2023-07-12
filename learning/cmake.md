@@ -12,6 +12,7 @@
   cd build
   cmake -G "MinGW Makefiles" ..
   mingw32-make.exe
+  ./test/unit_tests.exe
   ```
 
   
