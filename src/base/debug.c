@@ -14,7 +14,7 @@
 #include "string.h"
 
 void DebugShowPRINT(const char* str) {
-#if 1
+#if 0
     printf(str);
 #else /* 后续可以扩展不同分支，当前先按照printf来完成 */
     // log_file

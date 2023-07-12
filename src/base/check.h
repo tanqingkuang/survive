@@ -18,32 +18,31 @@
 #include "errcode.h"
 
 /* 带默认返回值的检查宏 */
-#define CHECK_NULL_AUTORETURN(p)                                            \
-    do {                                                                    \
-        if (p == NULL) {                                                    \
-            DebugShow(DEBUG_LEVEL_ERR, "[%s] [%s] is null\n", __FUNCTION__, \
-                      #p);                                                  \
-            return ERR_POINTER_NULL;                                        \
-        }                                                                   \
+#define CHECK_NULL_AUTORETURN(p)                                               \
+    do {                                                                       \
+        if (p == NULL) {                                                       \
+            DebugShow(DEBUG_LEVEL_ERR, "[%s] [%s] is null", __FUNCTION__, #p); \
+            return ERR_POINTER_NULL;                                           \
+        }                                                                      \
     } while (0)
 
 /* 带默认返回值的检查宏 */
-#define CHECK_NULL_PARAMRETURN(p, errcode)                                 \
-    do {                                                                   \
-        if (p == NULL) {                                                   \
-            DebugShow(DEBUG_LEVEL_ERR, "[%s] [%s] is null, errcode[%u]\n", \
-                      __FUNCTION__, #p, (uint32)errcode);                  \
-            return errcode;                                                \
-        }                                                                  \
+#define CHECK_NULL_PARAMRETURN(p, errcode)                               \
+    do {                                                                 \
+        if (p == NULL) {                                                 \
+            DebugShow(DEBUG_LEVEL_ERR, "[%s] [%s] is null, errcode[%u]", \
+                      __FUNCTION__, #p, (uint32)errcode);                \
+            return errcode;                                              \
+        }                                                                \
     } while (0)
 
 /* 不带返回值的宏检查 */
-#define CHECK_NULL_VOID(p)                                                  \
-    do {                                                                    \
-        if (p == NULL) {                                                    \
-            DebugShow(DEBUG_LEVEL_ERR, "[%s] [%s] is null\n", __FUNCTION__, \
-                      #p);                                                  \
-            return;                                                         \
-        }                                                                   \
+#define CHECK_NULL_VOID(p)                                                     \
+    do {                                                                       \
+        if (p == NULL) {                                                       \
+            DebugShow(DEBUG_LEVEL_ERR, "[%s] [%s] is null", __FUNCTION__, #p); \
+            return;                                                            \
+        }                                                                      \
     } while (0)
+
 #endif

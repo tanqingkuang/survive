@@ -4,6 +4,7 @@ add_executable(
     unittest_base
     unittest_base.cpp
     ${PROJECT_SOURCE_DIR}/src/base/debug.c
+    ${PROJECT_SOURCE_DIR}/src/base/ini_cfg.c
     ${BASE_SRC_LIST}
     )
 

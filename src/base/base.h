@@ -16,6 +16,7 @@
 #include "check.h"
 #include "debug.h"
 #include "errcode.h"
+#include "ini_cfg.h"
 #include "type.h"
 
 #endif
