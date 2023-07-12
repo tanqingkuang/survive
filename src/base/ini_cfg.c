@@ -51,6 +51,7 @@ uint32 IniFileRead(const char *handleFile, const char *content, const char *key,
     (void)sprintf(contentAll, "[%s]", content);
     char *start = strstr(handleFile, contentAll);
     if (start == NULL) { /* 说明content没有找到 */
+        DebugShow(DEBUG_LEVEL_ERR, "content[%s] not found", content);
         return ERR_NOT_FOUND;
     }
     char *end = strstr(start + 1, "[");
@@ -63,6 +64,7 @@ uint32 IniFileRead(const char *handleFile, const char *content, const char *key,
     (void)sprintf(keyAll, "%s = ", key);
     char *dest = strstr(start + strlen(contentAll), keyAll);
     if (dest >= end || dest == NULL) {
+        DebugShow(DEBUG_LEVEL_ERR, "key[%s] not found in content[%s]", key, content);
         return ERR_NOT_FOUND;
     }
 
