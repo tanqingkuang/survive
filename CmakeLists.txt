@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.24)
 project(survive)
 
-# add_executable(survive src/project1/main.c src/func/func.c)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
+# add_executable(survive src/project1/main.c src/func/func.c)
+include(GNUInstallDirs)
 set(APP_PROJECT_DIR ${PROJECT_SOURCE_DIR}/src/project1)
 
 add_subdirectory(${APP_PROJECT_DIR})
@@ -12,3 +16,5 @@ link_directories(${APP_PROJECT_DIR})
 add_executable(survive ${PROJECT_SOURCE_DIR}/src/stub.c)
 
 target_link_libraries(survive project)
+
+add_subdirectory(test)

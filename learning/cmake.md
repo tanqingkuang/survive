@@ -8,8 +8,10 @@
 * 操作命令
 
   ```
-    cmake -G "MinGW Makefiles" .
-    mingw32-make.exe
+  git reset --hard && git clean -d -fx
+  cd build
+  cmake -G "MinGW Makefiles" ..
+  mingw32-make.exe
   ```
 
   
