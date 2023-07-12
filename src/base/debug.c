@@ -8,10 +8,48 @@
  * @copyright Copyright (c) 2023
  *
  */
-
 #include "debug.h"
 
-void debug_show(DEBUG_LEVEL_E level, const char* format, ...) {
-    printf("hahaha\n");
-    printf("heiheihei\n");
+#include "stdarg.h"
+#include "string.h"
+
+void DebugShowPRINT(const char* str) {
+#if 1
+    printf(str);
+#else /* 后续可以扩展不同分支，当前先按照printf来完成 */
+    // log_file
+#endif
+}
+
+void DebugShow(DEBUG_LEVEL_E level, const char* format, ...) {
+    if (level == DEBUG_LEVEL_NORMAL) return;
+
+    char out[1024] = {0};
+    char str[128] = {0};
+
+    va_list arg;
+    va_start(arg, format);
+
+    /* 控制颜色 */
+    if (level == DEBUG_LEVEL_ERR) {
+        (void)vsprintf(str, "\033[1;31m", 0);
+        strcat(out, str);
+    }
+
+    /* 打印前缀 */
+    const char* strLevel[] = {"", "LOG:     ", "WARNING: ", "ERROR:   "};
+    (void)vsprintf(str, strLevel[level], 0);
+    strcat(out, str);
+
+    /* 打印内容 */
+    (void)vsprintf(str, format, arg);
+    strcat(out, str);
+
+    /* 恢复颜色 */
+    (void)vsprintf(str, "\r\n\033[0m", 0);
+    strcat(out, str);
+
+    va_end(arg);
+
+    DebugShowPRINT(out);
 }
