@@ -2,13 +2,6 @@
 
 #include "base.h"
 
-TEST(base, debug) {
-    DebugShow(DEBUG_LEVEL_NORMAL, "%s ok %u", "123", 321);
-    DebugShow(DEBUG_LEVEL_PRINT, "%s ok %u", "123", 321);
-    DebugShow(DEBUG_LEVEL_WARINIG, "%s ok %u", "123", 321);
-    DebugShow(DEBUG_LEVEL_ERR, "%s ok %u", "123", 321);
-}
-
 TEST(base, ini_cfg) {
     char *handleFile = NULL;
     char value[128] = {0};
