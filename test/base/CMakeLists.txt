@@ -2,9 +2,9 @@ include_directories(${PROJECT_SOURCE_DIR}/src/base/)
 include_directories(${PROJECT_SOURCE_DIR}/platform/mockcpp/include)
 include_directories(${PROJECT_SOURCE_DIR}/platform)
 
-add_executable(
-    unittest_base
-    unittest_base.cpp
+add_executable(unittest_base
+    unittest_base_debug.cpp
+    unittest_base_ini_cfg.cpp
     ${PROJECT_SOURCE_DIR}/src/base/debug.c
     ${PROJECT_SOURCE_DIR}/src/base/ini_cfg.c
     )
