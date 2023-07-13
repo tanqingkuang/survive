@@ -69,12 +69,7 @@ uint32 MapCreate(const char *filename)
     gMapInfo.runInfo.resourceTake = MALLOC_ZERO(pointNum * sizeof(uint8));
 
     /* 分配资源 */
-    for (uint32 i = 0; i < gMapInfo.iniInfo.resourceNum; i++) {
-        srand((uint32)time(NULL));
-        uint32 x = rand() % gMapInfo.iniInfo.width;
-        uint32 y = rand() % gMapInfo.iniInfo.high;
-        gMapInfo.runInfo.resourceMap[x * gMapInfo.iniInfo.width + y] += 1;
-    }
+    MapResourceReset();
     return SUCCESS;
 }
 
@@ -93,4 +88,31 @@ void MapDestory(void)
     if (gMapInfo.runInfo.resourceMap != NULL) free(gMapInfo.runInfo.resourceMap);
     if (gMapInfo.runInfo.resourceTake != NULL) free(gMapInfo.runInfo.resourceTake);
     (void)memset(&gMapInfo, 0, sizeof(gMapInfo));
+}
+
+uint32 MapResourceInfoGet(const MAP_POINT_S *point, uint32 *resourceSize)
+{
+    CHECK_NULL_AUTORETURN(point);
+    CHECK_NULL_AUTORETURN(resourceSize);
+    CHECK_NULL_AUTORETURN(gMapInfo.runInfo.resourceMap);
+    CHECK_CONDITION_AUTORETURN(point->x, CHECK_CONDITION_LE, gMapInfo.iniInfo.width);
+    CHECK_CONDITION_AUTORETURN(point->y, CHECK_CONDITION_LE, gMapInfo.iniInfo.high);
+    *resourceSize = gMapInfo.runInfo.resourceMap[point->y * gMapInfo.iniInfo.width + point->x];
+    return SUCCESS;
+}
+
+uint32 MapResourceReset(void)
+{
+    CHECK_NULL_AUTORETURN(gMapInfo.runInfo.resourceMap);
+
+    memset(gMapInfo.runInfo.resourceMap, 0, gMapInfo.iniInfo.width * gMapInfo.iniInfo.high * sizeof(uint32));
+    srand((uint32)time(NULL)); /* 由于下面流程运行的太快，所以不能再for外初始化随机种子 */
+    for (uint32 i = 0; i < gMapInfo.iniInfo.resourceNum; i++) {
+        uint32 x = rand() % gMapInfo.iniInfo.width;
+        uint32 y = rand() % gMapInfo.iniInfo.high;
+        gMapInfo.runInfo.resourceMap[y * gMapInfo.iniInfo.width + x] += 1;
+        gMapInfo.runInfo.resourceMap[y * gMapInfo.iniInfo.width + x] = gMapInfo.runInfo.resourceMap[y * gMapInfo.iniInfo.width + x];
+    }
+
+    return SUCCESS;
 }

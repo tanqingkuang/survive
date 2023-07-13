@@ -18,8 +18,6 @@
 extern "C" {
 #endif
 
-
-
 /* 地图初始化：为了测试方便，将filename作为入参传入 */
 uint32 MapCreate(const char *filename);
 
@@ -31,6 +29,13 @@ typedef struct {
     uint32 size;
 } MAP_RESCOURCE_TAKE_INFO_S;
 
+/** 坐标轴如下
+  *——width——> x
+  |
+ high
+  |
+  V y 
+ */
 typedef struct {
     uint32 x;
     uint32 y;

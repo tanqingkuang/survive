@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+add_definitions(-DLLT)
+
 # add_executable(survive src/project1/main.c src/func/func.c)
 include(GNUInstallDirs)
 set(APP_PROJECT_DIR ${PROJECT_SOURCE_DIR}/src/project1)
