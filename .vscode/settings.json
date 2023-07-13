@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "debug.h": "c",
+        "string.h": "c",
+        "map.h": "c",
+        "stdio.h": "c",
+        "base.h": "c",
+        "random": "c"
+    }
+}

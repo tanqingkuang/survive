@@ -72,6 +72,7 @@
 
 - [ ] fclose有未定义符号
 - [ ] unittest对被测文件使用cmake直接引用，没有做到cmake组件化
-- [ ] debug show在llt下还是会有打印
+- [X] debug show在llt下还是会有打印
 - [ ] mockcpp函数替换的方式未掌握
 - [ ] 测试用例无法直接全量运行，需要手动操作
+- [ ] 需要有修改ini文件的能力

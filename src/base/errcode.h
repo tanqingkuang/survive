@@ -16,7 +16,8 @@
 #define SUCCESS 0
 #define ERR_POINTER_NULL 1 /* 空指针 */
 #define ERR_MALLOC 2       /* 内存申请失败 */
-#define ERR_FILE_OPEN 2    /* 内存申请失败 */
+#define ERR_FILE_OPEN 2    /* 文件打开失败 */
 #define ERR_NOT_FOUND 3    /* 未找到 */
+#define ERR_CONDITION 4    /* 条件不对 */
 
 #endif

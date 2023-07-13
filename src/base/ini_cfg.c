@@ -9,12 +9,7 @@
  *
  */
 #include "ini_cfg.h"
-
-#include <stdio.h>
-#include <string.h>
-
 #include "base.h"
-#include "malloc.h"
 
 uint32 IniFileInit(const char *fileName, char **handleFile) {
     CHECK_NULL_AUTORETURN(handleFile);
@@ -26,13 +21,12 @@ uint32 IniFileInit(const char *fileName, char **handleFile) {
     }
 
     long len = filelength(fileno(fp));
-    *handleFile = malloc(len);
+    *handleFile = MALLOC_ZERO(len);
     if (*handleFile == NULL) {
         // fcolse(fp);
         DebugShow(DEBUG_LEVEL_ERR, "malloc[%u] fail", len);
         return ERR_MALLOC;
     }
-    memset(*handleFile, 0, len);
 
     fread(*handleFile, len, sizeof(char), fp);
     // fclose(fp);
