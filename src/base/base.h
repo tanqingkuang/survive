@@ -13,10 +13,17 @@
 #ifndef BASE_H
 #define BASE_H
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <io.h>
+
 #include "check.h"
 #include "debug.h"
 #include "errcode.h"
 #include "ini_cfg.h"
 #include "type.h"
+#include "oprate.h"
 
 #endif

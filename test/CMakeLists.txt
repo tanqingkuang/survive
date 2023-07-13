@@ -8,3 +8,4 @@ include_directories(${PROJECT_SOURCE_DIR}/platform/googletest/include)
 include(GoogleTest)
 
 add_subdirectory(base)
+add_subdirectory(map)
