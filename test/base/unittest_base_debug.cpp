@@ -14,7 +14,7 @@ void DebugShowPRINT(const char* str);
 #endif
 
 static const char *gDestChar = NULL;
-bool check_func(const char* str)
+static bool check_func(const char* str)
 {
     EXPECT_STREQ(gDestChar, str);
     return 1;

@@ -1,6 +1,6 @@
 /**
  * @file map_ini_cfg.h
- * @author your name (you@domain.com)
+ * @author zhangmeng (847305142@qq.com)
  * @brief 地图的配置数据
  * @version 0.1
  * @date 2023-07-13
@@ -18,6 +18,7 @@
 extern "C" {
 #endif
 
+uint32 MapIniCfg(const char *filename);
 
 #ifdef __cplusplus
 }

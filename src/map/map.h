@@ -1,6 +1,6 @@
 /**
  * @file map.h
- * @author your name (you@domain.com)
+ * @author zhangmeng (847305142@qq.com)
  * @brief 地图功能对外接口汇总
  * @version 0.1
  * @date 2023-07-13
@@ -24,11 +24,6 @@ uint32 MapCreate(const char *filename);
 /* 地图销毁 */
 void MapDestory(void);
 
-/* TODO:当前没有想好要注册那些信息 */
-typedef struct {
-    uint32 size;
-} MAP_RESCOURCE_TAKE_INFO_S;
-
 /** 坐标轴如下
   *——width——> x
   |
@@ -41,7 +36,28 @@ typedef struct {
     uint32 y;
 } MAP_POINT_S;
 
+typedef enum {
+    MAP_RESOURCE_TAKE_SHARE = 0,
+    MAP_RESOURCE_TAKE_CONFLICT,
+    MAP_RESOURCE_TAKE_END
+} MAP_RESOURCE_TAKE_E;
+
+typedef uint32 (*ANIMAL_RESOURCE_ADD)(float resource);
+
+typedef struct {
+    uint32 animalId;
+    uint32 size;
+    MAP_RESOURCE_TAKE_E type;
+    ANIMAL_RESOURCE_ADD pfunc; /* todo：资源增加函数钩子 */
+} MAP_ANIMAL_S;
+
+typedef struct {
+    MAP_POINT_S point;
+    MAP_ANIMAL_S animal;
+} MAP_RESCOURCE_TAKE_INFO_S;
+
 uint32 MapResourceInfoGet(const MAP_POINT_S *point, uint32 *resourceSize);
+uint32 MapResourceInfoSet(const MAP_POINT_S *point, uint32 resourceSize);
 
 /* 资源抢占 */
 uint32 MapResourceTake(const MAP_RESCOURCE_TAKE_INFO_S *info);
@@ -57,6 +73,8 @@ typedef enum {
     MAP_INI_INFO_WIDTH = 0,
     MAG_INI_INFO_HIGHT,
     MAG_INI_INFO_RESOURCENUM,
+    MAG_INI_INFO_CONFLICTMULTI,
+    MAG_INI_INFO_CONFLICCONSUME,
     MAG_INI_INFO_END
 } MAP_INI_INFO_E;
 

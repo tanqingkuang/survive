@@ -8,6 +8,7 @@ add_executable(unittest_map
     ${PROJECT_SOURCE_DIR}/src/base/debug.c
     ${PROJECT_SOURCE_DIR}/src/base/ini_cfg.c
     ${PROJECT_SOURCE_DIR}/src/map/map.c
+    ${PROJECT_SOURCE_DIR}/src/map/map_data.c
     ${PROJECT_SOURCE_DIR}/src/map/map_ini_cfg.c
     )
 
