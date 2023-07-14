@@ -11,6 +11,45 @@
 #include "ini_cfg.h"
 #include "base.h"
 
+#if SEPARATOR("Private", 1)
+
+uint32 IniFileFindKey(const char *handleFile, const char *content, const char *key, char **valueStr)
+{
+    CHECK_NULL_AUTORETURN(handleFile);
+    CHECK_NULL_AUTORETURN(content);
+    CHECK_NULL_AUTORETURN(key);
+    CHECK_NULL_AUTORETURN(valueStr);
+
+    /* 通过content和下一个[确定范围 */
+    char contentAll[128] = {0};
+    (void)sprintf(contentAll, "[%s]", content);
+    char *start = strstr(handleFile, contentAll);
+    if (start == NULL) { /* 说明content没有找到 */
+        DebugShow(DEBUG_LEVEL_ERR, "content[%s] not found", content);
+        return ERR_NOT_FOUND;
+    }
+    char *end = strstr(start + 1, "[");
+    if (end == NULL) {
+        end = start + strlen(start);
+    }
+
+    /* 在范围内找到key */
+    char keyAll[128] = {0};
+    (void)sprintf(keyAll, "%s = ", key);
+    char *dest = strstr(start + strlen(contentAll), keyAll);
+    if (dest >= end || dest == NULL) {
+        DebugShow(DEBUG_LEVEL_ERR, "key[%s] not found in content[%s]", key, content);
+        return ERR_NOT_FOUND;
+    }
+
+    *valueStr = dest + strlen(keyAll);
+    return SUCCESS;
+}
+
+#endif
+
+#if SEPARATOR("Public", 1)
+
 uint32 IniFileInit(const char *fileName, char **handleFile) {
     CHECK_NULL_AUTORETURN(handleFile);
 
@@ -35,35 +74,40 @@ uint32 IniFileInit(const char *fileName, char **handleFile) {
 
 uint32 IniFileRead(const char *handleFile, const char *content, const char *key,
                    char *value, uint32 valueSize) {
-    CHECK_NULL_AUTORETURN(handleFile);
-    CHECK_NULL_AUTORETURN(content);
-    CHECK_NULL_AUTORETURN(key);
     CHECK_NULL_AUTORETURN(value);
 
-    /* 通过content和下一个[确定范围 */
-    char contentAll[128] = {0};
-    (void)sprintf(contentAll, "[%s]", content);
-    char *start = strstr(handleFile, contentAll);
-    if (start == NULL) { /* 说明content没有找到 */
-        DebugShow(DEBUG_LEVEL_ERR, "content[%s] not found", content);
-        return ERR_NOT_FOUND;
-    }
-    char *end = strstr(start + 1, "[");
-    if (end == NULL) {
-        end = start + strlen(start);
-    }
+    char *valueStr = NULL;
+    uint32 ret =  IniFileFindKey(handleFile, content, key, &valueStr);
+    CHECK_RET_AUTORETURN(ret);
 
-    /* 在范围内找到key */
-    char keyAll[128] = {0};
-    (void)sprintf(keyAll, "%s = ", key);
-    char *dest = strstr(start + strlen(contentAll), keyAll);
-    if (dest >= end || dest == NULL) {
-        DebugShow(DEBUG_LEVEL_ERR, "key[%s] not found in content[%s]", key, content);
-        return ERR_NOT_FOUND;
-    }
+    /* 提取内容 */
+    (void)sscanf(valueStr, "%s", value);
+    return SUCCESS;
+}
 
-    /* 获取key信息 */
-    sscanf(dest + strlen(keyAll), "%s", value);
+uint32 IniFileChange(char **handleFile, const char *content, const char *key,
+                   const char *value, uint32 valueSize)
+{
+    CHECK_NULL_AUTORETURN(handleFile);
+    CHECK_NULL_AUTORETURN(value);
+
+    char *oldHandleFile = *handleFile;
+    char *valueStr = NULL;
+    uint32 ret =  IniFileFindKey(oldHandleFile, content, key, &valueStr);
+    CHECK_RET_AUTORETURN(ret);
+
+    char oldValue[128] = {0};
+    (void)sscanf(valueStr, "%s", oldValue);
+
+    int len = strlen(oldHandleFile) + 1 - strlen(oldValue) + strlen(value);
+    char *newHandleFile = (char *)MALLOC_ZERO(len);
+    memcpy(newHandleFile, oldHandleFile, valueStr - oldHandleFile);
+    strcat(newHandleFile, value);
+    strcat(newHandleFile, valueStr + strlen(oldValue));
+
+    free(oldHandleFile);
+    *handleFile = newHandleFile;
+    
     return SUCCESS;
 }
 
@@ -73,3 +117,5 @@ void IniFileDestory(char **handleFile) {
     free(*handleFile);
     *handleFile = NULL;
 }
+
+#endif

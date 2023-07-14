@@ -12,6 +12,8 @@
 #ifndef INI_OPRATE_H
 #define INI_OPRATE_H
 
+#define SEPARATOR(str, value) (value) /* 用于文件做分割，从而更好展示代码使用 */
+
 #define ARRAYSIZE(x) (sizeof((x)) / sizeof((x)[0]))
 
 inline static void *malloc_zero(uint32 size)
