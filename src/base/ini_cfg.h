@@ -21,6 +21,8 @@ extern "C" {
 uint32 IniFileInit(const char *fileName, char **handleFile);
 uint32 IniFileRead(const char *handleFile, const char *content, const char *key,
                    char *value, uint32 valueSize);
+uint32 IniFileChange(char **handleFile, const char *content, const char *key,
+                   const char *value, uint32 valueSize);
 void IniFileDestory(char **handleFile);
 
 #ifdef __cplusplus
