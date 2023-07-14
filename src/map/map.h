@@ -42,13 +42,13 @@ typedef enum {
     MAP_RESOURCE_TAKE_END
 } MAP_RESOURCE_TAKE_E;
 
-typedef uint32 (*ANIMAL_RESOURCE_ADD)(float resource);
+typedef uint32 (*ANIMAL_RESOURCE_ADD_F)(float resource);
 
 typedef struct {
     uint32 animalId;
     uint32 size;
     MAP_RESOURCE_TAKE_E type;
-    ANIMAL_RESOURCE_ADD pfunc; /* todo：资源增加函数钩子 */
+    ANIMAL_RESOURCE_ADD_F pfunc; /* todo：资源增加函数钩子 */
 } MAP_ANIMAL_S;
 
 typedef struct {
