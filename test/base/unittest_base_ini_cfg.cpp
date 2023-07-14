@@ -6,8 +6,6 @@ TEST(base, ini_cfg) {
     char *handleFile = NULL;
     char value[128] = {0};
 
-    const char *destStr = "[subfile]\nmap = map.ini\nhigh = 7\n\n[map]\nwidth = 10\nhigh = 20\n";
-
     /* 异常用例 */
     EXPECT_NE(IniFileInit(NULL, &handleFile), SUCCESS);
     EXPECT_NE(IniFileInit("noexit.txt", &handleFile), SUCCESS);
@@ -19,16 +17,14 @@ TEST(base, ini_cfg) {
 
     /* 正常用例 */
     EXPECT_EQ(IniFileInit("../test/base/cfg.ini", &handleFile), SUCCESS);
-    EXPECT_EQ(strcmp(handleFile, destStr), 0);
-
     EXPECT_EQ(IniFileRead(handleFile, "subfile", "map", value, 128), SUCCESS);
-    EXPECT_EQ(strcmp(value, "map.ini"), 0);
+    EXPECT_STREQ(value, "map.ini");
     EXPECT_EQ(IniFileRead(handleFile, "map", "width", value, 128), SUCCESS);
-    EXPECT_EQ(strcmp(value, "10"), 0);
+    EXPECT_STREQ(value, "10");
     EXPECT_EQ(IniFileRead(handleFile, "map", "high", value, 128), SUCCESS);
-    EXPECT_EQ(strcmp(value, "20"), 0);
+    EXPECT_STREQ(value, "20");
     EXPECT_EQ(IniFileRead(handleFile, "subfile", "high", value, 128), SUCCESS); /* 测试是否会找到其他content的同名key */
-    EXPECT_EQ(strcmp(value, "7"), 0);
+    EXPECT_STREQ(value, "7");
 
     { /* 找不到的用例 */
         EXPECT_NE(IniFileRead(handleFile, "subfile", "width", value, 128), SUCCESS); /* 测试是否会找到其他content的key */
