@@ -1,6 +1,6 @@
 /**
  * @file oprate.h
- * @author your name (you@domain.com)
+ * @author zhangmeng (847305142@qq.com)
  * @brief 一些基本操作，这里提前定义好，方便后续使用
  * @version 0.1
  * @date 2023-07-13
