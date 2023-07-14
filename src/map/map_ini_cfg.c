@@ -14,13 +14,15 @@
 
 typedef struct {
     const char *str;
-    MAP_INI_INFO_E type;
+    MAP_INI_INFO_E typeDest;
 } MAP_INI_CFG_S;
 
 MAP_INI_CFG_S gMapIniCfg[MAG_INI_INFO_END] = {
     {"width", MAP_INI_INFO_WIDTH},
     {"high", MAG_INI_INFO_HIGHT},
     {"resourcenum", MAG_INI_INFO_RESOURCENUM},
+    {"conflictMulti", MAG_INI_INFO_CONFLICTMULTI},
+    {"conflictconsume", MAG_INI_INFO_CONFLICCONSUME},
 };
 
 uint32 MapIniCfg(const char *filename)
@@ -34,10 +36,10 @@ uint32 MapIniCfg(const char *filename)
 
     /* 获取数据 */
     for (uint32 i = 0; i < ARRAYSIZE(gMapIniCfg); i++) {
-        char value[128] = {0};
-        ret = IniFileRead(handleFile, "map", gMapIniCfg[i].str, value, ARRAYSIZE(value));
+        char valueStr[128] = {0};
+        ret = IniFileRead(handleFile, "map", gMapIniCfg[i].str, valueStr, ARRAYSIZE(valueStr));
         CHECK_RET_AUTORETURN(ret);
-        MapInfoSet(gMapIniCfg[i].type, atoi(value));
+        MapInfoSet(gMapIniCfg[i].typeDest, atoi(valueStr));
     }
 
     /* 销毁句柄 */

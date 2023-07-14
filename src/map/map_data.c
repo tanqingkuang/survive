@@ -18,6 +18,8 @@ typedef struct {
     uint32 width;
     uint32 high;
     uint32 resourceNum;
+    float conflictMulti;
+    float conflictconsume;
 } MAP_INI_INFO_S;
 
 typedef struct MAP_RUN_INFO_TAKE_ANIMAL_S {
@@ -45,9 +47,11 @@ MAP_INFO_S gMapInfo = {{0}};
 void MapInfoSet(MAP_INI_INFO_E type, uint32 data)
 {
     switch (type) {
-        case MAP_INI_INFO_WIDTH: gMapInfo.iniInfo.width = data;
-        case MAG_INI_INFO_HIGHT: gMapInfo.iniInfo.high = data;
-        case MAG_INI_INFO_RESOURCENUM: gMapInfo.iniInfo.resourceNum = data;
+        case MAP_INI_INFO_WIDTH: gMapInfo.iniInfo.width = data; break;
+        case MAG_INI_INFO_HIGHT: gMapInfo.iniInfo.high = data; break;
+        case MAG_INI_INFO_RESOURCENUM: gMapInfo.iniInfo.resourceNum = data; break;
+        case MAG_INI_INFO_CONFLICTMULTI: gMapInfo.iniInfo.conflictMulti = data / 10.0; break;
+        case MAG_INI_INFO_CONFLICCONSUME: gMapInfo.iniInfo.conflictconsume = data / 10.0; break;
     }
 }
 
@@ -73,9 +77,6 @@ uint32 MapDimen2to1(int x, int y)
 /* 更新某个节点 */
 uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
 {
-    float conflictMulti = 1.5; /* 当前先这样用，后面改为ini文件获取 */
-    float consume = 0.2; /* 当前先这样用，后面改为ini文件获取 */
-
     CHECK_NULL_AUTORETURN(resourceMap);
     CHECK_NULL_AUTORETURN(resourceTake);
 
@@ -107,9 +108,11 @@ uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
             CHECK_RET_AUTORETURN(p->info.pfunc(1.0f * (*resourceMap) / animalNum));
         } else { /* 资源进行竞争分配，分配过程有资源消耗 */
             float rst = (*resourceMap) / allSize  * p->info.size;
+            float consume = gMapInfo.iniInfo.conflictconsume;
             if (p->info.type == MAP_RESOURCE_TAKE_SHARE) {
                 CHECK_RET_AUTORETURN(p->info.pfunc(rst - consume));
             } else {
+                float conflictMulti = gMapInfo.iniInfo.conflictMulti;
                 CHECK_RET_AUTORETURN(p->info.pfunc(conflictMulti * rst - consume));
             }
         }
@@ -130,6 +133,8 @@ uint32 MapInfoGet(MAP_INI_INFO_E type)
         case MAP_INI_INFO_WIDTH: return gMapInfo.iniInfo.width;
         case MAG_INI_INFO_HIGHT: return gMapInfo.iniInfo.high;
         case MAG_INI_INFO_RESOURCENUM: return gMapInfo.iniInfo.resourceNum;
+        case MAG_INI_INFO_CONFLICTMULTI: return (uint32)(gMapInfo.iniInfo.conflictMulti * 10);
+        case MAG_INI_INFO_CONFLICCONSUME: return (uint32)(gMapInfo.iniInfo.conflictconsume * 10);
         default: return 0; 
     }
 }
