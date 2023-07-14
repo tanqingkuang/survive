@@ -73,6 +73,9 @@ uint32 MapDimen2to1(int x, int y)
 /* 更新某个节点 */
 uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
 {
+    float conflictMulti = 1.5; /* 当前先这样用，后面改为ini文件获取 */
+    float consume = 0.2; /* 当前先这样用，后面改为ini文件获取 */
+
     CHECK_NULL_AUTORETURN(resourceMap);
     CHECK_NULL_AUTORETURN(resourceTake);
 
@@ -83,13 +86,14 @@ uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
     /* 统计该点上的动物信息 */
     MAP_RUN_INFO_TAKE_ANIMAL_S *p = resourceTake->next;
     MAP_RESOURCE_TAKE_E type = MAP_RESOURCE_TAKE_SHARE;
-    uint32 allSize = 0;
+    float allSize = 0;
     uint32 animalNum = 0;
-    while(p != NULL) {
-        CHECK_NULL_AUTORETURN(p->info.pfunc);
-        allSize += p->info.size * 1.5;
+    while(p != NULL) {        
         if (p->info.type == MAP_RESOURCE_TAKE_CONFLICT) {
             type = MAP_RESOURCE_TAKE_CONFLICT;
+            allSize += p->info.size * 1.5f;
+        } else {
+            allSize += p->info.size;
         }
         animalNum++;
         p = p->next;
@@ -102,7 +106,12 @@ uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
         if (type == MAP_RESOURCE_TAKE_SHARE) { /* 资源进行平均分配，分配过程中没有资源消耗 */
             CHECK_RET_AUTORETURN(p->info.pfunc(1.0f * (*resourceMap) / animalNum));
         } else { /* 资源进行竞争分配，分配过程有资源消耗 */
-
+            float rst = (*resourceMap) / allSize  * p->info.size;
+            if (p->info.type == MAP_RESOURCE_TAKE_SHARE) {
+                CHECK_RET_AUTORETURN(p->info.pfunc(rst - consume));
+            } else {
+                CHECK_RET_AUTORETURN(p->info.pfunc(conflictMulti * rst - consume));
+            }
         }
         p = p->next;
     }
