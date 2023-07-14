@@ -19,22 +19,6 @@
 extern "C" {
 #endif
 
-typedef struct {
-    uint32 width;
-    uint32 high;
-    uint32 resourceNum;
-} MAP_INI_INFO_S;
-
-typedef struct {
-    uint32 *resourceMap;
-    uint8 *resourceTake;
-} MAP_RUN_INFO_S;
-
-typedef struct {
-    MAP_INI_INFO_S iniInfo;
-    MAP_RUN_INFO_S runInfo;
-} MAP_INFO_S;
-
 void MapInfoSet(MAP_INI_INFO_E type, uint32 data);
 uint32 MapRunInfoInit(void);
 

@@ -13,8 +13,10 @@
 #include "map_data.h"
 #include "map_ini_cfg.h"
 
+/* 构建地图 */
 uint32 MapCreate(const char *filename)
 {
+    /* 如果已经初始化过了，则报错 */
     CHECK_CONDITION_AUTORETURN(MapInfoGet(MAG_INI_INFO_HIGHT), CHECK_CONDITION_EQ, 0);
 
     /* 读取ini配置文件中的信息更新 */
@@ -23,9 +25,10 @@ uint32 MapCreate(const char *filename)
 
     /* 初始化运行态数据 */
     ret = MapRunInfoInit();
-    CHECK_RET_AUTORETURN(ret);
+    if (ret != SUCCESS) {
+        MapDestory();
+        return ret;
+    }
 
-    /* 分配资源 */
-    MapResourceReset();
     return SUCCESS;
 }

@@ -54,22 +54,65 @@ TEST(MAP, CreateDestory) {
     EXPECT_NE(MapResourceReset(), SUCCESS);
 }
 
+uint32 UnitTestAnimalResourceAdd(float resource)
+{
+    return SUCCESS;
+}
+
+static bool check_func(float resource)
+{
+    //EXPECT_NEAR(3.0, resource, 0.001);
+    return 1;
+}
+
+/* 模拟一个生物的消耗过程 */
 TEST(MAP, consume) {
     EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
+    const uint32 resource = 3; /* 设定的map上的资源 */
+    MAP_POINT_S point = {2, 8};
+    MAP_RESCOURCE_TAKE_INFO_S info = {point, {0, 4, MAP_RESOURCE_TAKE_SHARE, UnitTestAnimalResourceAdd}};
 
-    /* 测试思路：抢占一次资源后进行一次地图更新，发现资源消耗掉了 */
+    /* 错误入参 */
+    EXPECT_NE(MapResourceTake(NULL), SUCCESS);
+
+    info.animal.pfunc = NULL;
+    EXPECT_NE(MapResourceTake(&info), SUCCESS);
+    info.animal.pfunc = UnitTestAnimalResourceAdd;
+
+    info.animal.size = 0;
+    EXPECT_NE(MapResourceTake(&info), SUCCESS);
+    info.animal.size = 4;
+
+    /* 先预设一个资源 */
+    EXPECT_EQ(MapResourceInfoSet(&point, resource), SUCCESS);
+
+    /* 占用并更新数据 */
+    EXPECT_EQ(MapResourceTake(&info), SUCCESS);
+    EXPECT_NE(MapResourceTake(&info), SUCCESS); /* 同一个动物重复占用会报错 */
+    MOCKER(UnitTestAnimalResourceAdd) /* 检测回调函数：入参为3，只会调用一次 */
+        .expects(once())
+        .with(eq(3.0f))
+        .will(returnValue((uint32)0));
+    EXPECT_EQ(MapRefresh(), 0);
+    EXPECT_EQ(MapRefresh(), 0); /* 第二次刷新不会有回调 */
+    GlobalMockObject::verify();
+
+    /* 检测资源被消耗掉，生物能量增加 */
+    uint32 resourceSize = 0;
+    EXPECT_EQ(MapResourceInfoGet(&point, &resourceSize), SUCCESS);
+    EXPECT_EQ(resourceSize, 0);
 
     MapDestory();
 }
 
-TEST(MAP, conflict) {
-    EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
-
-    /* 测试思路：2个生物同时抢占，看最后资源分配和消耗时候合理
-       这里要测试如下几种场景
-       1、分享 or 竞争
-       2、竞争时：赢者通吃 or 资源分配，由于这两个是通过配置文件修改的，所以需要有修改配置文件的能力
-     */
-
-    MapDestory();
-}
+//TEST(MAP, conflict) {
+//    EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
+//
+//    /* 测试思路：2个生物同时抢占，看最后资源分配和消耗时候合理
+//       这里要测试如下几种场景
+//       1、分享 or 竞争
+//       2、竞争时：赢者通吃 or 资源分配，由于这两个是通过配置文件修改的，所以需要有修改配置文件的能力
+//     */
+//
+//    MapDestory();
+//}
