@@ -11,16 +11,26 @@
 
 #include "map.h"
 #include "map_data.h"
-#include "map_ini_cfg.h"
+
+INI_CFG_VALUE_S gMapIniCfg[MAP_INI_INFO_END] = {
+    {"width", MAP_INI_INFO_WIDTH},
+    {"high", MAP_INI_INFO_HIGHT},
+    {"resourcenum", MAP_INI_INFO_RESOURCENUM},
+};
+
+void MapInitSet(uint32 type, uint32 value)
+{
+    MapInfoSet(type, value);
+}
 
 /* 构建地图 */
 uint32 MapCreate(const char *filename)
 {
     /* 如果已经初始化过了，则报错 */
-    CHECK_CONDITION_AUTORETURN(MapInfoGet(MAG_INI_INFO_HIGHT), CHECK_CONDITION_EQ, 0);
+    CHECK_CONDITION_AUTORETURN(MapInfoGet(MAP_INI_INFO_HIGHT), CHECK_CONDITION_EQ, 0);
 
     /* 读取ini配置文件中的信息更新 */
-    uint32 ret = MapIniCfg(filename);
+    uint32 ret = IniFileValueGet(filename, "map", gMapIniCfg, ARRAYSIZE(gMapIniCfg), MapInitSet);
     CHECK_RET_AUTORETURN(ret);
 
     /* 初始化运行态数据 */

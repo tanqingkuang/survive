@@ -76,7 +76,6 @@ inline uint32 static check_condition(uint32 a, CHECK_CONDITION_E type, uint32 b)
         }                                                                \
     } while (0)
 
-
 /* 不带返回值的宏检查 */
 #define CHECK_NULL_VOID(p)                                                     \
     do {                                                                       \

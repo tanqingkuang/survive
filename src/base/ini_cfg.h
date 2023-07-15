@@ -25,6 +25,15 @@ uint32 IniFileChange(char **handleFile, const char *content, const char *key,
                    const char *value, uint32 valueSize);
 void IniFileDestory(char **handleFile);
 
+typedef struct {
+    const char *str;
+    uint32 type;
+} INI_CFG_VALUE_S;
+
+typedef void (*INI_VALUE_SET_F)(uint32 type, uint32 value);
+
+uint32 IniFileValueGet(const char *filename, const char *content, INI_CFG_VALUE_S *cfg, uint32 cfgNum, INI_VALUE_SET_F func);
+
 #ifdef __cplusplus
 }
 #endif

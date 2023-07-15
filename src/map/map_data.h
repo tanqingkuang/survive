@@ -19,6 +19,11 @@
 extern "C" {
 #endif
 
+typedef struct MAP_RUN_INFO_TAKE_ANIMAL_S {
+    MAP_ANIMAL_S info;
+    struct MAP_RUN_INFO_TAKE_ANIMAL_S *next;
+} MAP_RUN_INFO_TAKE_ANIMAL_S;
+
 void MapInfoSet(MAP_INI_INFO_E type, uint32 data);
 uint32 MapRunInfoInit(void);
 
