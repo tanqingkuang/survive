@@ -118,7 +118,7 @@ void IniFileDestory(char **handleFile) {
     *handleFile = NULL;
 }
 
-uint32 IniFileValueGet(const char *filename, INI_CFG_VALUE_S *cfg, uint32 cfgNum, INI_VALUE_SET_F func)
+uint32 IniFileValueGet(const char *filename, const char *content, INI_CFG_VALUE_S *cfg, uint32 cfgNum, INI_VALUE_SET_F func)
 {
     CHECK_NULL_AUTORETURN(filename);
     CHECK_NULL_AUTORETURN(cfg);
@@ -132,7 +132,7 @@ uint32 IniFileValueGet(const char *filename, INI_CFG_VALUE_S *cfg, uint32 cfgNum
     /* 获取数据 */
     for (uint32 i = 0; i < cfgNum; i++) {
         char valueStr[128] = {0};
-        ret = IniFileRead(handleFile, "map", cfg[i].str, valueStr, ARRAYSIZE(valueStr));
+        ret = IniFileRead(handleFile, content, cfg[i].str, valueStr, ARRAYSIZE(valueStr));
         CHECK_RET_AUTORETURN(ret);
         func(cfg[i].type, atoi(valueStr));
     }

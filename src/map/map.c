@@ -16,8 +16,6 @@ INI_CFG_VALUE_S gMapIniCfg[MAP_INI_INFO_END] = {
     {"width", MAP_INI_INFO_WIDTH},
     {"high", MAP_INI_INFO_HIGHT},
     {"resourcenum", MAP_INI_INFO_RESOURCENUM},
-    {"conflictMulti", MAP_INI_INFO_CONFLICTMULTI},
-    {"conflictConsume", MAP_INI_INFO_CONFLICCONSUME},
 };
 
 void MapInitSet(uint32 type, uint32 value)
@@ -32,7 +30,7 @@ uint32 MapCreate(const char *filename)
     CHECK_CONDITION_AUTORETURN(MapInfoGet(MAP_INI_INFO_HIGHT), CHECK_CONDITION_EQ, 0);
 
     /* 读取ini配置文件中的信息更新 */
-    uint32 ret = IniFileValueGet(filename, gMapIniCfg, ARRAYSIZE(gMapIniCfg), MapInitSet);
+    uint32 ret = IniFileValueGet(filename, "map", gMapIniCfg, ARRAYSIZE(gMapIniCfg), MapInitSet);
     CHECK_RET_AUTORETURN(ret);
 
     /* 初始化运行态数据 */

@@ -19,7 +19,6 @@ typedef struct {
     uint32 width;
     uint32 high;
     uint32 resourceNum;
-    float conflictMulti;
     float conflictConsume;
 } MAP_INI_INFO_S;
 
@@ -46,8 +45,6 @@ void MapInfoSet(MAP_INI_INFO_E type, uint32 data)
         case MAP_INI_INFO_WIDTH: gMapInfo.iniInfo.width = data; break;
         case MAP_INI_INFO_HIGHT: gMapInfo.iniInfo.high = data; break;
         case MAP_INI_INFO_RESOURCENUM: gMapInfo.iniInfo.resourceNum = data; break;
-        case MAP_INI_INFO_CONFLICTMULTI: gMapInfo.iniInfo.conflictMulti = data / 10.0; break;
-        case MAP_INI_INFO_CONFLICCONSUME: gMapInfo.iniInfo.conflictConsume = data / 10.0; break;
     }
 }
 
@@ -99,8 +96,6 @@ uint32 MapInfoGet(MAP_INI_INFO_E type)
         case MAP_INI_INFO_WIDTH: return gMapInfo.iniInfo.width;
         case MAP_INI_INFO_HIGHT: return gMapInfo.iniInfo.high;
         case MAP_INI_INFO_RESOURCENUM: return gMapInfo.iniInfo.resourceNum;
-        case MAP_INI_INFO_CONFLICTMULTI: return (uint32)(gMapInfo.iniInfo.conflictMulti * 10);
-        case MAP_INI_INFO_CONFLICCONSUME: return (uint32)(gMapInfo.iniInfo.conflictConsume * 10);
         default: return 0; 
     }
 }

@@ -32,7 +32,7 @@ typedef struct {
 
 typedef void (*INI_VALUE_SET_F)(uint32 type, uint32 value);
 
-uint32 IniFileValueGet(const char *filename, INI_CFG_VALUE_S *cfg, uint32 cfgNum, INI_VALUE_SET_F func);
+uint32 IniFileValueGet(const char *filename, const char *content, INI_CFG_VALUE_S *cfg, uint32 cfgNum, INI_VALUE_SET_F func);
 
 #ifdef __cplusplus
 }

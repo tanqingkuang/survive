@@ -15,20 +15,35 @@
 typedef struct {
     float conflictMulti;
     float conflictConsume;
+    float speedConsume;
+    float sizeConsume;
+    uint32 tick;
+    float viewConsume;
+    float reproductionConsume;
 } RULE_INFO_S;
 
 RULE_INFO_S gRuleInfo = {0};
 
-INI_CFG_VALUE_S gRuleIniCfg[2] = {
+INI_CFG_VALUE_S gRuleIniCfg[RULE_INI_INFO_END] = {
     {"conflictMulti", RULE_INI_INFO_CONFLICTMULTI},
     {"conflictConsume", RULE_INI_INFO_CONFLICCONSUME},
+    {"speedConsume", RULE_INI_INFO_SPEEDCONSUME},
+    {"sizeConsume", RULE_INI_INFO_SIZECONSUME},
+    {"viewConsume", RULE_INI_INFO_VIEWCONSUME},
+    {"tick", RULE_INI_INFO_TICK},
+    {"reproductionConsume", RULE_INI_INFO_REPRODUCTIONCONSUME},
 };
 
 void RuleInitSet(uint32 type, uint32 value)
 {
     switch (type) {
-        case RULE_INI_INFO_CONFLICTMULTI: gRuleInfo.conflictMulti = value / 10.0; break;
-        case RULE_INI_INFO_CONFLICCONSUME: gRuleInfo.conflictConsume = value / 10.0; break;
+        case RULE_INI_INFO_CONFLICTMULTI: gRuleInfo.conflictMulti = value / 1000.0; break;
+        case RULE_INI_INFO_CONFLICCONSUME: gRuleInfo.conflictConsume = value / 1000.0; break;
+        case RULE_INI_INFO_SPEEDCONSUME: gRuleInfo.speedConsume = value / 1000.0; break;
+        case RULE_INI_INFO_SIZECONSUME: gRuleInfo.sizeConsume = value / 1000.0; break;
+        case RULE_INI_INFO_VIEWCONSUME: gRuleInfo.viewConsume = value / 1000.0; break;
+        case RULE_INI_INFO_TICK: gRuleInfo.tick = value; break;
+        case RULE_INI_INFO_REPRODUCTIONCONSUME: gRuleInfo.reproductionConsume = value / 1000.0; break;
     }
 }
 
@@ -36,7 +51,7 @@ void RuleInitSet(uint32 type, uint32 value)
 
 uint32 RuleCreate(const char *filename)
 {
-    return IniFileValueGet(filename, gRuleIniCfg, ARRAYSIZE(gRuleIniCfg), RuleInitSet);
+    return IniFileValueGet(filename, "rule", gRuleIniCfg, ARRAYSIZE(gRuleIniCfg), RuleInitSet);
 }
 
 float RuleInfoGet(uint32 type)
@@ -94,5 +109,17 @@ uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head)
         }
         p = p->next;
     }
+    return SUCCESS;
+}
+
+/** 寻找资源 */
+uint32 RuleFindResource(void)
+{
+    return SUCCESS;
+}
+
+/** 繁殖 */
+uint32 RuleReproduction(void)
+{
     return SUCCESS;
 }
