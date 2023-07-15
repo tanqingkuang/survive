@@ -2,11 +2,12 @@
 #include <mockcpp/mockcpp.hpp>
 
 #include "map.h"
+#include "rule.h"
 
 static void UnittestMapResourceNum(uint32 dest)
 {
     uint32 sum = 0;
-    for (uint32 y = 0; y < MapInfoGet(MAG_INI_INFO_HIGHT); y++) {
+    for (uint32 y = 0; y < MapInfoGet(MAP_INI_INFO_HIGHT); y++) {
         for (uint32 x = 0; x < MapInfoGet(MAP_INI_INFO_WIDTH); x++) {
             MAP_POINT_S point = {x,y};
             uint32 resourceSize = 0;
@@ -33,21 +34,22 @@ TEST(MAP, CreateDestory) {
 
     /* 正常创建用例 */
     EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
+    EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
     EXPECT_NE(MapCreate("../test/map/cfg.ini"), SUCCESS); /* 第二次创建失败 */
     EXPECT_EQ(MapInfoGet(MAP_INI_INFO_WIDTH), 10);
-    EXPECT_EQ(MapInfoGet(MAG_INI_INFO_HIGHT), 20);
-    EXPECT_EQ(MapInfoGet(MAG_INI_INFO_RESOURCENUM), 50);
-    UnittestMapResourceNum(MapInfoGet(MAG_INI_INFO_RESOURCENUM));
+    EXPECT_EQ(MapInfoGet(MAP_INI_INFO_HIGHT), 20);
+    EXPECT_EQ(MapInfoGet(MAP_INI_INFO_RESOURCENUM), 50);
+    UnittestMapResourceNum(MapInfoGet(MAP_INI_INFO_RESOURCENUM));
 
     /* 资源刷新 */
     EXPECT_EQ(MapResourceReset(), SUCCESS);
-    UnittestMapResourceNum(MapInfoGet(MAG_INI_INFO_RESOURCENUM));
+    UnittestMapResourceNum(MapInfoGet(MAP_INI_INFO_RESOURCENUM));
 
     /* 销毁用例 */
     MapDestory();
     EXPECT_EQ(MapInfoGet(MAP_INI_INFO_WIDTH), 0); /* 创建后数据清零 */
-    EXPECT_EQ(MapInfoGet(MAG_INI_INFO_HIGHT), 0); /* 创建后数据清零 */
-    EXPECT_EQ(MapInfoGet(MAG_INI_INFO_RESOURCENUM), 0); /* 创建后数据清零 */
+    EXPECT_EQ(MapInfoGet(MAP_INI_INFO_HIGHT), 0); /* 创建后数据清零 */
+    EXPECT_EQ(MapInfoGet(MAP_INI_INFO_RESOURCENUM), 0); /* 创建后数据清零 */
 
     /* 销毁后报错 */
     EXPECT_NE(MapResourceInfoGet(&point, &resourceSize), SUCCESS);
@@ -67,6 +69,7 @@ static uint32 UnitTestAnimalResourceAdd(float resource)
 /* 模拟一个生物的消耗过程 */
 TEST(MAP, consume) {
     EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
+    EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
     const uint32 resource = 3; /* 设定的map上的资源 */
     MAP_POINT_S point = {2, 8};
     MAP_RESCOURCE_TAKE_INFO_S info = {point, {0, 4, MAP_RESOURCE_TAKE_SHARE, UnitTestAnimalResourceAdd}};
@@ -105,6 +108,7 @@ TEST(MAP, consume) {
 /* 模拟竞争场景下的资源分配 */
 TEST(MAP, conflictShare) {
     EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
+    EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
     const uint32 resource = 3; /* 设定的map上的资源 */
     MAP_POINT_S point = {2, 8};
     MAP_RESCOURCE_TAKE_INFO_S info0 = {point, {0, 4, MAP_RESOURCE_TAKE_SHARE, UnitTestAnimalResourceAdd}};
@@ -134,6 +138,7 @@ TEST(MAP, conflictShare) {
 #if 0
 TEST(MAP, conflictOne) {
     EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
+    EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
     MapDestory();
 }
 #endif

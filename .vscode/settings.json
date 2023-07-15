@@ -15,9 +15,10 @@
         "tuple": "c",
         "type_traits": "c",
         "utility": "c",
-        "map_ini_cfg.h": "c",
         "map_data.h": "c",
         "ini_cfg.h": "c",
-        "errcode.h": "c"
+        "errcode.h": "c",
+        "rule.h": "c",
+        "string": "c"
     }
 }

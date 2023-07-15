@@ -71,11 +71,11 @@ uint32 MapResourceReset(void);
 /* 为了方便测试，这里将信息作为dfx开放出去 */
 typedef enum {
     MAP_INI_INFO_WIDTH = 0,
-    MAG_INI_INFO_HIGHT,
-    MAG_INI_INFO_RESOURCENUM,
-    MAG_INI_INFO_CONFLICTMULTI,
-    MAG_INI_INFO_CONFLICCONSUME,
-    MAG_INI_INFO_END
+    MAP_INI_INFO_HIGHT,
+    MAP_INI_INFO_RESOURCENUM,
+    MAP_INI_INFO_CONFLICTMULTI,
+    MAP_INI_INFO_CONFLICCONSUME,
+    MAP_INI_INFO_END
 } MAP_INI_INFO_E;
 
 /* 范围值为信息，非错误码，如果未初始化则返回0 */

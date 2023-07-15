@@ -13,11 +13,22 @@
 #define RULE_H
 
 #include "base.h"
+#include "map_data.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/* 为了方便测试，这里将信息作为dfx开放出去 */
+typedef enum {
+    RULE_INI_INFO_CONFLICTMULTI = 0,
+    RULE_INI_INFO_CONFLICCONSUME,
+    RULE_INI_INFO_END
+} RULE_INI_INFO_E;
+
+uint32 RuleCreate(const char *filename);
+float RuleInfoGet(uint32 type);
+uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head);
 
 #ifdef __cplusplus
 }

@@ -11,6 +11,7 @@
 
 #include "map_data.h"
 #include "map.h"
+#include "rule.h"
 
 #if SEPARATOR("private", 1)
 
@@ -19,13 +20,8 @@ typedef struct {
     uint32 high;
     uint32 resourceNum;
     float conflictMulti;
-    float conflictconsume;
+    float conflictConsume;
 } MAP_INI_INFO_S;
-
-typedef struct MAP_RUN_INFO_TAKE_ANIMAL_S {
-    MAP_ANIMAL_S info;
-    struct MAP_RUN_INFO_TAKE_ANIMAL_S *next;
-} MAP_RUN_INFO_TAKE_ANIMAL_S;
 
 typedef struct {
     uint8 using;
@@ -48,10 +44,10 @@ void MapInfoSet(MAP_INI_INFO_E type, uint32 data)
 {
     switch (type) {
         case MAP_INI_INFO_WIDTH: gMapInfo.iniInfo.width = data; break;
-        case MAG_INI_INFO_HIGHT: gMapInfo.iniInfo.high = data; break;
-        case MAG_INI_INFO_RESOURCENUM: gMapInfo.iniInfo.resourceNum = data; break;
-        case MAG_INI_INFO_CONFLICTMULTI: gMapInfo.iniInfo.conflictMulti = data / 10.0; break;
-        case MAG_INI_INFO_CONFLICCONSUME: gMapInfo.iniInfo.conflictconsume = data / 10.0; break;
+        case MAP_INI_INFO_HIGHT: gMapInfo.iniInfo.high = data; break;
+        case MAP_INI_INFO_RESOURCENUM: gMapInfo.iniInfo.resourceNum = data; break;
+        case MAP_INI_INFO_CONFLICTMULTI: gMapInfo.iniInfo.conflictMulti = data / 10.0; break;
+        case MAP_INI_INFO_CONFLICCONSUME: gMapInfo.iniInfo.conflictConsume = data / 10.0; break;
     }
 }
 
@@ -84,43 +80,13 @@ uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
         return SUCCESS;
     }
 
-    /* 统计该点上的动物信息 */
-    MAP_RUN_INFO_TAKE_ANIMAL_S *p = resourceTake->next;
-    MAP_RESOURCE_TAKE_E type = MAP_RESOURCE_TAKE_SHARE;
-    float allSize = 0;
-    uint32 animalNum = 0;
-    while(p != NULL) {        
-        if (p->info.type == MAP_RESOURCE_TAKE_CONFLICT) {
-            type = MAP_RESOURCE_TAKE_CONFLICT;
-            allSize += p->info.size * 1.5f;
-        } else {
-            allSize += p->info.size;
-        }
-        animalNum++;
-        p = p->next;
-    }
-    CHECK_CONDITION_AUTORETURN(animalNum, CHECK_CONDITION_NE, 0);
+    /* 资源分配 */
+    CHECK_RET_AUTORETURN(RuleResouceAllocate(*resourceMap, resourceTake->next));
 
-    /* 进行资源分配 */
-    p = resourceTake->next;
-    while(p != NULL) {
-        if (type == MAP_RESOURCE_TAKE_SHARE) { /* 资源进行平均分配，分配过程中没有资源消耗 */
-            CHECK_RET_AUTORETURN(p->info.pfunc(1.0f * (*resourceMap) / animalNum));
-        } else { /* 资源进行竞争分配，分配过程有资源消耗 */
-            float rst = (*resourceMap) / allSize  * p->info.size;
-            float consume = gMapInfo.iniInfo.conflictconsume;
-            if (p->info.type == MAP_RESOURCE_TAKE_SHARE) {
-                CHECK_RET_AUTORETURN(p->info.pfunc(rst - consume));
-            } else {
-                float conflictMulti = gMapInfo.iniInfo.conflictMulti;
-                CHECK_RET_AUTORETURN(p->info.pfunc(conflictMulti * rst - consume));
-            }
-        }
-        p = p->next;
-    }
-
+    /* 资源清零 */
     *resourceMap = 0;
     resourceTake->using = 0;
+    return SUCCESS;
 }
 
 #endif
@@ -131,10 +97,10 @@ uint32 MapInfoGet(MAP_INI_INFO_E type)
 {
     switch (type) {
         case MAP_INI_INFO_WIDTH: return gMapInfo.iniInfo.width;
-        case MAG_INI_INFO_HIGHT: return gMapInfo.iniInfo.high;
-        case MAG_INI_INFO_RESOURCENUM: return gMapInfo.iniInfo.resourceNum;
-        case MAG_INI_INFO_CONFLICTMULTI: return (uint32)(gMapInfo.iniInfo.conflictMulti * 10);
-        case MAG_INI_INFO_CONFLICCONSUME: return (uint32)(gMapInfo.iniInfo.conflictconsume * 10);
+        case MAP_INI_INFO_HIGHT: return gMapInfo.iniInfo.high;
+        case MAP_INI_INFO_RESOURCENUM: return gMapInfo.iniInfo.resourceNum;
+        case MAP_INI_INFO_CONFLICTMULTI: return (uint32)(gMapInfo.iniInfo.conflictMulti * 10);
+        case MAP_INI_INFO_CONFLICCONSUME: return (uint32)(gMapInfo.iniInfo.conflictConsume * 10);
         default: return 0; 
     }
 }
@@ -218,7 +184,7 @@ uint32 MapResourceTake(const MAP_RESCOURCE_TAKE_INFO_S *info)
 /* 地图更新 */
 uint32 MapRefresh(void)
 {
-    for (uint32 y = 0; y < MapInfoGet(MAG_INI_INFO_HIGHT); y++) {
+    for (uint32 y = 0; y < MapInfoGet(MAP_INI_INFO_HIGHT); y++) {
         for (uint32 x = 0; x < MapInfoGet(MAP_INI_INFO_WIDTH); x++) {
             uint32 idx = MapDimen2to1(x, y);
             CHECK_RET_AUTORETURN(MapRefreshNode(gMapInfo.runInfo.resourceMap + idx, gMapInfo.runInfo.resourceTake + idx));
