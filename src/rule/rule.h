@@ -36,6 +36,7 @@ typedef struct {
     MAP_POINT_S *point;
     float view;
     float speed;
+    float *size;
 } RULE_FIND_RESOURCE_S;
 
 typedef uint32 (*ANIMAL_CREATE_F)(uint32 id);

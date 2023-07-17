@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <io.h>
+#include <math.h>
 
 #include "check.h"
 #include "debug.h"

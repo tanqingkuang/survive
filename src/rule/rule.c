@@ -138,13 +138,66 @@ uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head)
  * * 地图周围坐标是否有食物
  * 出参
  * * 生物的后续坐标
+ * 实现
+ * * 假设可以进行斜线移动
+ * * 先对其进行遍历，看在视野范围内，哪个point资源最大，如果视野内有资源，移动到该资源内
+ * * 如果视野内没有资源，则不动
  */
+
+float RulePointLen(MAP_POINT_S *a, MAP_POINT_S *b)
+{
+    float x = (a->x - b->x) * (a->x - b->x);
+    float y = (a->y - b->y) * (a->y - b->y);
+    return sqrt(x + y);
+}
+
+float RuleFindResourceConsume(float len, float view)
+{
+    return view * gRuleInfo.viewConsume + len * gRuleInfo.speedConsume;
+}
+
 uint32 RuleFindResource(RULE_FIND_RESOURCE_S *info)
 {
     CHECK_NULL_AUTORETURN(info);
     CHECK_NULL_AUTORETURN(info->point);
     CHECK_CONDITION_AUTORETURN(info->view, CHECK_CONDITION_GE, 1);
     CHECK_CONDITION_AUTORETURN(info->speed, CHECK_CONDITION_GE, 1);
+
+    uint32 width = MapInfoGet(MAP_INI_INFO_WIDTH);
+    uint32 hight = MapInfoGet(MAP_INI_INFO_HIGHT);
+
+    uint32 maxX = 0, maxY = 0, maxResource = 0;
+    float minLen = 10000000000;
+    for (uint32 x = 0; x < width; x++) {
+        for (uint32 y = 0; y < hight; y++) {
+            /* 如果没有资源或者在视野之外这跳过该point */
+            MAP_POINT_S a = {x, y};
+            uint32 resourceSize = 0;
+            CHECK_RET_AUTORETURN(MapResourceInfoGet(&a, &resourceSize));
+            if (resourceSize == 0)
+                continue;
+            float len = RulePointLen(&a, info->point);
+            if (len > info->view)
+                continue;
+
+            /* 只有在资源更大，或者虽然资源相等但是更近的情况下才会移动 */
+            if ((resourceSize > maxResource) || (resourceSize == maxResource && len < minLen)) { /* 记录资源最大的位置 */
+                maxX = x;
+                maxY = y;
+                maxResource = resourceSize;
+                minLen = len;
+            }
+        }
+    }
+
+    float len = 0;
+    if (maxResource != 0) { /* 找到了最好的资源，则直接移动 */
+        info->point->x = maxX;
+        info->point->y = maxY;
+        len = minLen;
+    }
+    *info->size -= RuleFindResourceConsume(len, info->view);
+
     return SUCCESS;
 }
 

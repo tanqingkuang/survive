@@ -146,7 +146,7 @@ uint32 AnimalRun(uint32 idx, ANIMAL_INI_INFO_S *iniInfo, ANIMAL_RUN_INFO_S *anim
     CHECK_NULL_AUTORETURN(animal);
 
     // 寻找食物并移动
-    RULE_FIND_RESOURCE_S info = {iniInfo->findResourcePlan, &animal->point, iniInfo->view, iniInfo->speed};
+    RULE_FIND_RESOURCE_S info = {iniInfo->findResourcePlan, &animal->point, iniInfo->view, iniInfo->speed, &animal->size};
     CHECK_RET_AUTORETURN(RuleFindResource(&info));
 
     uint32 resourceSize = 0;
