@@ -13,7 +13,7 @@
 #define RULE_H
 
 #include "base.h"
-#include "map_data.h"
+#include "map_data.h" //TODO rule对map有依赖
 
 #ifdef __cplusplus
 extern "C" {

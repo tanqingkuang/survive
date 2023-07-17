@@ -88,7 +88,7 @@ uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
     }
 
     /* 资源分配 */
-    CHECK_RET_AUTORETURN(RuleResouceAllocate(*resourceMap, resourceTake->next));
+    CHECK_RET_AUTORETURN(RuleResouceAllocate(*resourceMap, resourceTake->next)); // TODO 从这里看出来，map对rule有依赖
 
     /* 资源清零 */
     *resourceMap = 0;

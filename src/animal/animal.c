@@ -158,7 +158,7 @@ uint32 AnimalRun(uint32 idx, ANIMAL_INI_INFO_S *iniInfo, ANIMAL_RUN_INFO_S *anim
 
     if (end == 1) { // 一天结束开始繁殖
         RULE_EPRODUCTION_INFO_S info = {iniInfo->reproductionPlan, &animal->size, iniInfo->reproductionTh, idx, AnimalCreate};
-        CHECK_RET_AUTORETURN(RuleReproduction(&info)); /* TODO待实现 */
+        CHECK_RET_AUTORETURN(RuleReproduction(&info));
     }
     return SUCCESS;
 }
