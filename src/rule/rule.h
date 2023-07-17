@@ -43,7 +43,8 @@ typedef uint32 (*ANIMAL_CREATE_F)(uint32 id);
 
 typedef struct {
     uint32 type;
-    float *resource;
+    float iniSize;
+    float *size;
     float reproductionTh;
     uint32 idx;
     ANIMAL_CREATE_F pfunc;

@@ -151,9 +151,9 @@ float RulePointLen(MAP_POINT_S *a, MAP_POINT_S *b)
     return sqrt(x + y);
 }
 
-float RuleFindResourceConsume(float len, float view)
+float RuleFindResourceConsume(float len, float view, float size)
 {
-    return view * gRuleInfo.viewConsume + len * gRuleInfo.speedConsume;
+    return view * gRuleInfo.viewConsume + len * gRuleInfo.speedConsume * size;
 }
 
 uint32 RuleFindResource(RULE_FIND_RESOURCE_S *info)
@@ -196,7 +196,7 @@ uint32 RuleFindResource(RULE_FIND_RESOURCE_S *info)
         info->point->y = maxY;
         len = minLen;
     }
-    *info->size -= RuleFindResourceConsume(len, info->view);
+    *info->size -= RuleFindResourceConsume(len, info->view, *info->size);
 
     return SUCCESS;
 }
@@ -212,5 +212,13 @@ uint32 RuleFindResource(RULE_FIND_RESOURCE_S *info)
  */
 uint32 RuleReproduction(RULE_EPRODUCTION_INFO_S *info)
 {
-    return SUCCESS;
+    CHECK_NULL_AUTORETURN(info);
+    CHECK_NULL_AUTORETURN(info->pfunc);
+    CHECK_NULL_AUTORETURN(info->size);
+
+    if (*info->size < info->reproductionTh) /* 不满足繁殖要求则不繁殖 */
+        return SUCCESS;
+
+    *info->size -= info->iniSize + gRuleInfo.reproductionConsume;
+    return info->pfunc(info->idx);
 }

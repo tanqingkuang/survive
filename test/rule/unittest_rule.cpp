@@ -23,13 +23,13 @@ uint32 MapResourceInfoGet(const MAP_POINT_S *point, uint32 *resourceSize)
 /* 测试资源分配功能 */
 TEST(RULE, ResouceAllocate)
 {
-    EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
+    EXPECT_EQ(RuleCreate("../test/rule/cfg.ini"), SUCCESS);
 }
 
 /* 测试资源查找功能0：只在view内查找，如果找不到则停止 */
 TEST(RULE, FindResource0)
 {
-    EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
+    EXPECT_EQ(RuleCreate("../test/rule/cfg.ini"), SUCCESS);
 
     MAP_POINT_S point = {1, 1};
     float size = 1;
@@ -95,8 +95,41 @@ TEST(RULE, FindResource0)
     size = 1;
 }
 
+static uint32 AnimalCreatStub(uint32 id)
+{
+    return SUCCESS;
+}
+
 /* 测试繁殖功能 */
 TEST(RULE, Reproduction)
 {
-    EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
+    EXPECT_EQ(RuleCreate("../test/rule/cfg.ini"), SUCCESS);
+    float size = 1;
+    RULE_EPRODUCTION_INFO_S info = {0, 2, &size, 3, 0, AnimalCreatStub};
+
+    /* 异常入参 */
+    EXPECT_NE(RuleReproduction(NULL), SUCCESS);
+    info.pfunc = NULL;
+    EXPECT_NE(RuleReproduction(&info), SUCCESS);
+    info.pfunc = AnimalCreatStub;
+    info.size = NULL;
+    EXPECT_NE(RuleReproduction(&info), SUCCESS);
+    info.size = &size;
+
+    /* 不满足繁殖要求 */
+    MOCKER(AnimalCreatStub)
+        .expects(never())
+        .will(returnValue(SUCCESS));
+    EXPECT_EQ(RuleReproduction(&info), SUCCESS);
+    GlobalMockObject::verify();
+    EXPECT_EQ(size, 1);
+
+    /* 满足则繁殖 */
+    size = 5;
+    MOCKER(AnimalCreatStub)
+        .expects(once())
+        .will(returnValue(SUCCESS));
+    EXPECT_EQ(RuleReproduction(&info), SUCCESS);
+    GlobalMockObject::verify();
+    EXPECT_NEAR(size, 4.9 - 2, 0.0001);
 }

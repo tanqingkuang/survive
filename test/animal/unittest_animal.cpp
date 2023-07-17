@@ -25,7 +25,7 @@ uint32 MapResourceTake(const MAP_RESCOURCE_TAKE_INFO_S *info)
 
 uint32 RuleReproduction(RULE_EPRODUCTION_INFO_S *info)
 {
-    *(info->resource) = 0;
+    *(info->size) = 0;
     return SUCCESS;
 }
 
