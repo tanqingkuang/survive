@@ -130,6 +130,6 @@
 - [ ] unittest对被测文件使用cmake直接引用，没有做到cmake组件化
 - [X] debug show在llt下还是会有打印
 - [x] mockcpp函数替换的方式未掌握
-- [ ] 测试用例无法直接全量运行，需要手动操作
+- [x] 测试用例无法直接全量运行，需要手动操作
 - [x] 需要有修改ini文件的能力
 - [ ] rule.c依赖map_data.h的MAP_RUN_INFO_TAKE_ANIMAL_S，map_data.c依赖rule.c的RuleResouceAllocate，形成了循环依赖

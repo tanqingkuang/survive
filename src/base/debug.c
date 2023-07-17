@@ -13,14 +13,15 @@
 #include "stdarg.h"
 #include "string.h"
 
-void DebugShowPRINT(const char* str) {
-#ifndef LLT /* 为了LLT结果的整洁，LLT不建议将信息打印到屏幕上 */
-    printf(str);
-#endif
+void DebugShowPRINT(const char *str)
+{
+    // printf(str);
 }
 
-void DebugShow(DEBUG_LEVEL_E level, const char* format, ...) {
-    if (level == DEBUG_LEVEL_NORMAL) return;
+void DebugShow(DEBUG_LEVEL_E level, const char *format, ...)
+{
+    if (level == DEBUG_LEVEL_NORMAL)
+        return;
 
     char out[1024] = {0};
     char str[128] = {0};
@@ -29,13 +30,14 @@ void DebugShow(DEBUG_LEVEL_E level, const char* format, ...) {
     va_start(arg, format);
 
     /* 控制颜色 */
-    if (level == DEBUG_LEVEL_ERR) {
+    if (level == DEBUG_LEVEL_ERR)
+    {
         (void)vsprintf(str, "\033[1;31m", 0);
         strcat(out, str);
     }
 
     /* 打印前缀 */
-    const char* strLevel[] = {"", "LOG:     ", "WARNING: ", "ERROR:   "};
+    const char *strLevel[] = {"", "LOG:     ", "WARNING: ", "ERROR:   "};
     (void)vsprintf(str, strLevel[level], 0);
     strcat(out, str);
 

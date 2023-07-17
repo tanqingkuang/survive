@@ -4,9 +4,9 @@
  * @brief 地图功能对外接口汇总
  * @version 0.1
  * @date 2023-07-13
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 
 #ifndef MAP_H
@@ -29,9 +29,10 @@ void MapDestory(void);
   |
  high
   |
-  V y 
+  V y
  */
-typedef struct {
+typedef struct
+{
     uint32 x;
     uint32 y;
 } MAP_POINT_S;
@@ -44,14 +45,15 @@ typedef enum {
 
 typedef uint32 (*ANIMAL_RESOURCE_ADD_F)(float resource);
 
-typedef struct {
+typedef struct
+{
     uint32 animalId;
-    uint32 size;
+    float *size;
     MAP_RESOURCE_TAKE_E type;
-    ANIMAL_RESOURCE_ADD_F pfunc; /* todo：资源增加函数钩子 */
 } MAP_ANIMAL_S;
 
-typedef struct {
+typedef struct
+{
     MAP_POINT_S point;
     MAP_ANIMAL_S animal;
 } MAP_RESCOURCE_TAKE_INFO_S;

@@ -4,9 +4,9 @@
  * @brief 上帝功能对外接口汇总
  * @version 0.1
  * @date 2023-07-13
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 
 #ifndef RULE_H
@@ -31,9 +31,28 @@ typedef enum {
     RULE_INI_INFO_END
 } RULE_INI_INFO_E;
 
+typedef struct {
+    uint32 type; /* 算法类型 */
+    MAP_POINT_S *point;
+    float view;
+    float speed;
+} RULE_FIND_RESOURCE_S;
+
+typedef uint32 (*ANIMAL_CREATE_F)(uint32 id);
+
+typedef struct {
+    uint32 type;
+    float *resource;
+    float reproductionTh;
+    uint32 idx;
+    ANIMAL_CREATE_F pfunc;
+} RULE_EPRODUCTION_INFO_S;
+
 uint32 RuleCreate(const char *filename);
 float RuleInfoGet(uint32 type);
 uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head);
+uint32 RuleFindResource(RULE_FIND_RESOURCE_S *info);
+uint32 RuleReproduction(RULE_EPRODUCTION_INFO_S *info);
 
 #ifdef __cplusplus
 }

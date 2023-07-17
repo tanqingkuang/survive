@@ -9,3 +9,4 @@ include(GoogleTest)
 
 add_subdirectory(base)
 add_subdirectory(map)
+add_subdirectory(animal)

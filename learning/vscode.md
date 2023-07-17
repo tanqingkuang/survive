@@ -27,3 +27,13 @@
 
 * miDebuggerPath
 感觉像是调试工具的具体路径
+
+# 格式化
+* C_Cpp.clang_format_sortIncludes
+  改为false，从而解决头文件按照字典序重排的问题
+
+* C_Cpp.clang_format_style
+  ```
+  { BasedOnStyle: LLVM, UseTab: Never, IndentWidth: 4, TabWidth: 4, BreakBeforeBraces: Linux, AllowShortIfStatementsOnASingleLine: false, IndentCaseLabels: false, ColumnLimit: 0, AccessModifierOffset: -4, NamespaceIndentation: All, FixNamespaceComments: false }
+  ```
+  解决{另起一行的问题
