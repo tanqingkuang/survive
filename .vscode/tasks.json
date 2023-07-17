@@ -27,6 +27,12 @@
                 "make"
             ]
         },
+        {
+            "label": "Run Tests",
+            "type": "shell",
+            "command": "sh ./test.sh",
+            "group": "test"
+        }
     ],
     "version": "2.0.0"
 }
