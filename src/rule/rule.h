@@ -4,9 +4,9 @@
  * @brief 上帝功能对外接口汇总
  * @version 0.1
  * @date 2023-07-13
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 
 #ifndef RULE_H

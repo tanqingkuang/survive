@@ -45,8 +45,7 @@ MAP_INFO_S gMapInfo = {{0}};
 
 void MapInfoSet(MAP_INI_INFO_E type, uint32 data)
 {
-    switch (type)
-    {
+    switch (type) {
     case MAP_INI_INFO_WIDTH:
         gMapInfo.iniInfo.width = data;
         break;
@@ -84,8 +83,7 @@ uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
     CHECK_NULL_AUTORETURN(resourceMap);
     CHECK_NULL_AUTORETURN(resourceTake);
 
-    if (resourceTake->using == 0)
-    { /* 说明该节点无人占用，则直接返回 */
+    if (resourceTake->using == 0) { /* 说明该节点无人占用，则直接返回 */
         return SUCCESS;
     }
 
@@ -104,8 +102,7 @@ uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
 
 uint32 MapInfoGet(MAP_INI_INFO_E type)
 {
-    switch (type)
-    {
+    switch (type) {
     case MAP_INI_INFO_WIDTH:
         return gMapInfo.iniInfo.width;
     case MAP_INI_INFO_HIGHT:
@@ -153,8 +150,7 @@ uint32 MapResourceReset(void)
 
     memset(gMapInfo.runInfo.resourceMap, 0, gMapInfo.iniInfo.width * gMapInfo.iniInfo.high * sizeof(uint32));
     srand((uint32)time(NULL)); /* 由于下面流程运行的太快，所以不能再for外初始化随机种子 */
-    for (uint32 i = 0; i < gMapInfo.iniInfo.resourceNum; i++)
-    {
+    for (uint32 i = 0; i < gMapInfo.iniInfo.resourceNum; i++) {
         uint32 x = rand() % gMapInfo.iniInfo.width;
         uint32 y = rand() % gMapInfo.iniInfo.high;
         gMapInfo.runInfo.resourceMap[MapDimen2to1(x, y)] += 1;
@@ -174,8 +170,7 @@ uint32 MapResourceTake(const MAP_RESCOURCE_TAKE_INFO_S *info)
     /* 检查是否会重复注册 */
     uint32 idx = MapDimen2to1(info->point.x, info->point.y);
     MAP_RUN_INFO_TAKE_ANIMAL_S *p = gMapInfo.runInfo.resourceTake[idx].next;
-    while (p != NULL)
-    {
+    while (p != NULL) {
         CHECK_CONDITION_AUTORETURN(p->info.animalId, CHECK_CONDITION_NE, info->animal.animalId);
         p = p->next;
     }
@@ -199,10 +194,8 @@ uint32 MapResourceTake(const MAP_RESCOURCE_TAKE_INFO_S *info)
 /* 地图更新 */
 uint32 MapRefresh(void)
 {
-    for (uint32 y = 0; y < MapInfoGet(MAP_INI_INFO_HIGHT); y++)
-    {
-        for (uint32 x = 0; x < MapInfoGet(MAP_INI_INFO_WIDTH); x++)
-        {
+    for (uint32 y = 0; y < MapInfoGet(MAP_INI_INFO_HIGHT); y++) {
+        for (uint32 x = 0; x < MapInfoGet(MAP_INI_INFO_WIDTH); x++) {
             uint32 idx = MapDimen2to1(x, y);
             CHECK_RET_AUTORETURN(MapRefreshNode(gMapInfo.runInfo.resourceMap + idx, gMapInfo.runInfo.resourceTake + idx));
         }

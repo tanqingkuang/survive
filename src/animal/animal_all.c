@@ -43,8 +43,8 @@ void AnimalAllDestory(void)
 
 uint32 AnimalAllRun(uint32 end)
 {
-    for (uint32 idx = 0; idx < gAnimalAllNum; idx++)
-    {
+    srand((uint32)time(NULL)); /* 由于下面流程运行的太快，所以不能再for外初始化随机种子 */
+    for (uint32 idx = 0; idx < gAnimalAllNum; idx++) {
         AnimalsRun(idx, end);
     }
     return SUCCESS;

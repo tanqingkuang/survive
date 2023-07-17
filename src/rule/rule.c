@@ -12,8 +12,7 @@
 #include "rule.h"
 #include "map_data.h"
 
-typedef struct
-{
+typedef struct {
     float conflictMulti;
     float conflictConsume;
     float speedConsume;
@@ -37,8 +36,7 @@ INI_CFG_VALUE_S gRuleIniCfg[RULE_INI_INFO_END] = {
 
 void RuleInitSet(uint32 type, uint32 value)
 {
-    switch (type)
-    {
+    switch (type) {
     case RULE_INI_INFO_CONFLICTMULTI:
         gRuleInfo.conflictMulti = value / 1000.0;
         break;
@@ -72,8 +70,7 @@ uint32 RuleCreate(const char *filename)
 
 float RuleInfoGet(uint32 type)
 {
-    switch (type)
-    {
+    switch (type) {
     case RULE_INI_INFO_CONFLICTMULTI:
         return gRuleInfo.conflictMulti;
     case RULE_INI_INFO_CONFLICCONSUME:
@@ -100,15 +97,11 @@ uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head)
     MAP_RESOURCE_TAKE_E type = MAP_RESOURCE_TAKE_SHARE;
     float allSize = 0;
     uint32 animalNum = 0;
-    while (p != NULL)
-    {
-        if (p->info.type == MAP_RESOURCE_TAKE_CONFLICT)
-        {
+    while (p != NULL) {
+        if (p->info.type == MAP_RESOURCE_TAKE_CONFLICT) {
             type = MAP_RESOURCE_TAKE_CONFLICT;
             allSize += *(p->info.size) * 1.5f;
-        }
-        else
-        {
+        } else {
             allSize += *(p->info.size);
         }
         animalNum++;
@@ -118,22 +111,15 @@ uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head)
 
     /* 进行资源分配 */
     p = head;
-    while (p != NULL)
-    {
-        if (type == MAP_RESOURCE_TAKE_SHARE)
-        { /* 资源进行平均分配，分配过程中没有资源消耗 */
+    while (p != NULL) {
+        if (type == MAP_RESOURCE_TAKE_SHARE) { /* 资源进行平均分配，分配过程中没有资源消耗 */
             *(p->info.size) += 1.0f * resourceMap / animalNum;
-        }
-        else
-        { /* 资源进行竞争分配，分配过程有资源消耗 */
+        } else { /* 资源进行竞争分配，分配过程有资源消耗 */
             float rst = resourceMap / allSize * *(p->info.size);
             float conflictConsume = gRuleInfo.conflictConsume;
-            if (p->info.type == MAP_RESOURCE_TAKE_SHARE)
-            {
+            if (p->info.type == MAP_RESOURCE_TAKE_SHARE) {
                 *(p->info.size) += rst - conflictConsume;
-            }
-            else
-            {
+            } else {
                 float conflictMulti = gRuleInfo.conflictMulti;
                 *(p->info.size) += conflictMulti * rst - conflictConsume;
             }
@@ -143,7 +129,15 @@ uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head)
     return SUCCESS;
 }
 
-/** 寻找资源 */
+/** 寻找资源
+ * 资源寻找需要知道
+ * * 生物的当前坐标
+ * * 生物的视野
+ * * 生物的移动速度
+ * * 地图周围坐标是否有食物
+ * 出参
+ * * 生物的后续坐标
+ */
 uint32 RuleFindResource(void)
 {
     return SUCCESS;

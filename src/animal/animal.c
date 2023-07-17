@@ -13,8 +13,7 @@
 #include "map.h"
 #include "rule.h"
 
-typedef struct
-{
+typedef struct {
     uint32 num;
     float size;
     float view;
@@ -24,8 +23,7 @@ typedef struct
     uint32 reproductionPlan;
 } ANIMAL_INI_INFO_S;
 
-typedef struct ANIMAL_RUN_INFO_S
-{
+typedef struct ANIMAL_RUN_INFO_S {
     uint32 animalId;
     MAP_POINT_S point;
     float size;
@@ -36,7 +34,6 @@ typedef struct ANIMAL_RUN_INFO_S
 typedef struct
 {
     ANIMAL_INI_INFO_S iniInfo;
-
     uint32 num;
     ANIMAL_RUN_INFO_S *next;
 } ANIMAL_INFO_S;
@@ -57,8 +54,7 @@ ANIMAL_INFO_S *gAnimalInfo = NULL;
 void AnimalInitSet(uint32 type, uint32 value)
 {
     CHECK_NULL_VOID(gAnimalInfo);
-    switch (type)
-    {
+    switch (type) {
     case ANIMAL_INI_INFO_NUM:
         gAnimalInfo[gAnimalId].iniInfo.num = value;
         break;
@@ -98,8 +94,7 @@ uint32 AnimalCreate(ANIMAL_INFO_S *animals)
     /* 节点挂接 */
     animal->next = animals->next;
     animal->prev = NULL;
-    if (animals->next != NULL)
-    {
+    if (animals->next != NULL) {
         animals->next->prev = animal;
     }
     animals->next = animal;
@@ -112,8 +107,7 @@ uint32 AnimalInit(const char *filename, uint32 num)
     gAnimalInfo = (ANIMAL_INFO_S *)MALLOC_ZERO(sizeof(ANIMAL_INFO_S) * num);
     CHECK_NULL_AUTORETURN(gAnimalInfo);
 
-    for (uint32 idx = 0; idx < num; idx++)
-    {
+    for (uint32 idx = 0; idx < num; idx++) {
         char str[128] = {0};
         sprintf(str, "animal%u", idx);
         gAnimalId = idx;
@@ -121,10 +115,8 @@ uint32 AnimalInit(const char *filename, uint32 num)
     }
 
     gAnimalId = 0;
-    for (uint32 i = 0; i < num; i++)
-    {
-        for (uint32 j = 0; j < gAnimalInfo[i].iniInfo.num; j++)
-        {
+    for (uint32 i = 0; i < num; i++) {
+        for (uint32 j = 0; j < gAnimalInfo[i].iniInfo.num; j++) {
             CHECK_RET_AUTORETURN(AnimalCreate(gAnimalInfo + i));
         }
     }
@@ -135,11 +127,9 @@ void AnimalDestory(uint32 num)
 {
     if (gAnimalInfo == NULL)
         return;
-    for (uint32 i = 0; i < num; i++)
-    {
+    for (uint32 i = 0; i < num; i++) {
         ANIMAL_RUN_INFO_S *p = gAnimalInfo[i].next;
-        while (p != NULL)
-        {
+        while (p != NULL) {
             gAnimalInfo[i].next = p->next;
             free(p);
             p = gAnimalInfo[i].next;
@@ -154,17 +144,15 @@ uint32 AnimalRun(ANIMAL_INI_INFO_S *iniInfo, ANIMAL_RUN_INFO_S *animal, uint32 e
     // 寻找食物并移动
     // CHECK_RET_AUTORETURN(RuleFindResource(iniInfo, &(animal->point))); /* TODO 这里有个循环依赖的问题 */
 
-    if (MapInfoGet(MAP_INI_INFO_RESOURCENUM) != 0)
-    { // 如果该节点有食物则占用
+    if (MapInfoGet(MAP_INI_INFO_RESOURCENUM) != 0) { // 如果该节点有食物则占用
         MAP_RESCOURCE_TAKE_INFO_S info = {
             {animal->point.x, animal->point.y},
             {animal->animalId, &(animal->size), 0}};
         CHECK_RET_AUTORETURN(MapResourceTake(&info));
     }
 
-    if (end == 1)
-    { // 一天结束开始繁殖
-      // CHECK_RET_AUTORETURN(RuleReproduction()); /* TODO待实现 */
+    if (end == 1) { // 一天结束开始繁殖
+        // CHECK_RET_AUTORETURN(RuleReproduction()); /* TODO待实现 */
     }
     return SUCCESS;
 }
@@ -173,11 +161,9 @@ uint32 AnimalRun(ANIMAL_INI_INFO_S *iniInfo, ANIMAL_RUN_INFO_S *animal, uint32 e
 uint32 AnimalsRun(uint32 idx, uint32 end)
 {
     ANIMAL_RUN_INFO_S *p = gAnimalInfo[idx].next;
-    while (p != NULL)
-    {
+    while (p != NULL) {
         CHECK_RET_AUTORETURN(AnimalRun(&gAnimalInfo[idx].iniInfo, p, end));
-        if (p->size <= 0) /* 说明死亡 */
-        {
+        if (p->size <= 0) { /* 说明死亡 */
             if (p->prev != NULL)
                 p->prev->next = p->next;
             else

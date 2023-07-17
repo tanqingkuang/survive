@@ -16,13 +16,12 @@
 #include "animal_all.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-    uint32 AnimalInit(const char *filename, uint32 num);
-    void AnimalDestory(uint32 num);
-    uint32 AnimalsRun(uint32 idx, uint32 end);
+uint32 AnimalInit(const char *filename, uint32 num);
+void AnimalDestory(uint32 num);
+uint32 AnimalsRun(uint32 idx, uint32 end);
 
 #ifdef __cplusplus
 }
