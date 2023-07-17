@@ -19,6 +19,7 @@
         "ini_cfg.h": "c",
         "errcode.h": "c",
         "rule.h": "c",
-        "string": "c"
+        "string": "c",
+        "initializer_list": "cpp"
     }
 }

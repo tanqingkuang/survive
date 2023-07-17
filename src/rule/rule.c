@@ -4,15 +4,16 @@
  * @brief 上帝规则实现
  * @version 0.1
  * @date 2023-07-15
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 
 #include "rule.h"
 #include "map_data.h"
 
-typedef struct {
+typedef struct
+{
     float conflictMulti;
     float conflictConsume;
     float speedConsume;
@@ -36,14 +37,29 @@ INI_CFG_VALUE_S gRuleIniCfg[RULE_INI_INFO_END] = {
 
 void RuleInitSet(uint32 type, uint32 value)
 {
-    switch (type) {
-        case RULE_INI_INFO_CONFLICTMULTI: gRuleInfo.conflictMulti = value / 1000.0; break;
-        case RULE_INI_INFO_CONFLICCONSUME: gRuleInfo.conflictConsume = value / 1000.0; break;
-        case RULE_INI_INFO_SPEEDCONSUME: gRuleInfo.speedConsume = value / 1000.0; break;
-        case RULE_INI_INFO_SIZECONSUME: gRuleInfo.sizeConsume = value / 1000.0; break;
-        case RULE_INI_INFO_VIEWCONSUME: gRuleInfo.viewConsume = value / 1000.0; break;
-        case RULE_INI_INFO_TICK: gRuleInfo.tick = value; break;
-        case RULE_INI_INFO_REPRODUCTIONCONSUME: gRuleInfo.reproductionConsume = value / 1000.0; break;
+    switch (type)
+    {
+    case RULE_INI_INFO_CONFLICTMULTI:
+        gRuleInfo.conflictMulti = value / 1000.0;
+        break;
+    case RULE_INI_INFO_CONFLICCONSUME:
+        gRuleInfo.conflictConsume = value / 1000.0;
+        break;
+    case RULE_INI_INFO_SPEEDCONSUME:
+        gRuleInfo.speedConsume = value / 1000.0;
+        break;
+    case RULE_INI_INFO_SIZECONSUME:
+        gRuleInfo.sizeConsume = value / 1000.0;
+        break;
+    case RULE_INI_INFO_VIEWCONSUME:
+        gRuleInfo.viewConsume = value / 1000.0;
+        break;
+    case RULE_INI_INFO_TICK:
+        gRuleInfo.tick = value;
+        break;
+    case RULE_INI_INFO_REPRODUCTIONCONSUME:
+        gRuleInfo.reproductionConsume = value / 1000.0;
+        break;
     }
 }
 
@@ -56,10 +72,14 @@ uint32 RuleCreate(const char *filename)
 
 float RuleInfoGet(uint32 type)
 {
-    switch (type) {
-        case RULE_INI_INFO_CONFLICTMULTI: return gRuleInfo.conflictMulti;
-        case RULE_INI_INFO_CONFLICCONSUME: return gRuleInfo.conflictConsume;
-        default: return 0; 
+    switch (type)
+    {
+    case RULE_INI_INFO_CONFLICTMULTI:
+        return gRuleInfo.conflictMulti;
+    case RULE_INI_INFO_CONFLICCONSUME:
+        return gRuleInfo.conflictConsume;
+    default:
+        return 0;
     }
 }
 
@@ -80,12 +100,16 @@ uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head)
     MAP_RESOURCE_TAKE_E type = MAP_RESOURCE_TAKE_SHARE;
     float allSize = 0;
     uint32 animalNum = 0;
-    while(p != NULL) {        
-        if (p->info.type == MAP_RESOURCE_TAKE_CONFLICT) {
+    while (p != NULL)
+    {
+        if (p->info.type == MAP_RESOURCE_TAKE_CONFLICT)
+        {
             type = MAP_RESOURCE_TAKE_CONFLICT;
-            allSize += p->info.size * 1.5f;
-        } else {
-            allSize += p->info.size;
+            allSize += *(p->info.size) * 1.5f;
+        }
+        else
+        {
+            allSize += *(p->info.size);
         }
         animalNum++;
         p = p->next;
@@ -94,17 +118,24 @@ uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head)
 
     /* 进行资源分配 */
     p = head;
-    while(p != NULL) {
-        if (type == MAP_RESOURCE_TAKE_SHARE) { /* 资源进行平均分配，分配过程中没有资源消耗 */
-            CHECK_RET_AUTORETURN(p->info.pfunc(1.0f * resourceMap / animalNum));
-        } else { /* 资源进行竞争分配，分配过程有资源消耗 */
-            float rst = resourceMap / allSize  * p->info.size;
+    while (p != NULL)
+    {
+        if (type == MAP_RESOURCE_TAKE_SHARE)
+        { /* 资源进行平均分配，分配过程中没有资源消耗 */
+            *(p->info.size) += 1.0f * resourceMap / animalNum;
+        }
+        else
+        { /* 资源进行竞争分配，分配过程有资源消耗 */
+            float rst = resourceMap / allSize * *(p->info.size);
             float conflictConsume = gRuleInfo.conflictConsume;
-            if (p->info.type == MAP_RESOURCE_TAKE_SHARE) {
-                CHECK_RET_AUTORETURN(p->info.pfunc(rst - conflictConsume));
-            } else {
+            if (p->info.type == MAP_RESOURCE_TAKE_SHARE)
+            {
+                *(p->info.size) += rst - conflictConsume;
+            }
+            else
+            {
                 float conflictMulti = gRuleInfo.conflictMulti;
-                CHECK_RET_AUTORETURN(p->info.pfunc(conflictMulti * rst - conflictConsume));
+                *(p->info.size) += conflictMulti * rst - conflictConsume;
             }
         }
         p = p->next;

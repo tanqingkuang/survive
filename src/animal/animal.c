@@ -148,12 +148,6 @@ void AnimalDestory(uint32 num)
     free(gAnimalInfo);
 }
 
-/* TODO 这里有个问题，该函数参数不够，无法找到对象 */
-uint32 animalResourceAdd(float resource)
-{
-    return SUCCESS;
-}
-
 /* 每个生物的运行 */
 uint32 AnimalRun(ANIMAL_INI_INFO_S *iniInfo, ANIMAL_RUN_INFO_S *animal, uint32 end)
 {
@@ -162,7 +156,9 @@ uint32 AnimalRun(ANIMAL_INI_INFO_S *iniInfo, ANIMAL_RUN_INFO_S *animal, uint32 e
 
     if (MapInfoGet(MAP_INI_INFO_RESOURCENUM) != 0)
     { // 如果该节点有食物则占用
-        MAP_RESCOURCE_TAKE_INFO_S info = {animal->point, {animal->animalId, animal->size, 0, animalResourceAdd}};
+        MAP_RESCOURCE_TAKE_INFO_S info = {
+            {animal->point.x, animal->point.y},
+            {animal->animalId, &(animal->size), 0}};
         CHECK_RET_AUTORETURN(MapResourceTake(&info));
     }
 

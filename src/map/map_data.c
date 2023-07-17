@@ -4,9 +4,9 @@
  * @brief 做map数据管理
  * @version 0.1
  * @date 2023-07-14
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 
 #include "map_data.h"
@@ -15,24 +15,28 @@
 
 #if SEPARATOR("private", 1)
 
-typedef struct {
+typedef struct
+{
     uint32 width;
     uint32 high;
     uint32 resourceNum;
     float conflictConsume;
 } MAP_INI_INFO_S;
 
-typedef struct {
+typedef struct
+{
     uint8 using;
     MAP_RUN_INFO_TAKE_ANIMAL_S *next;
 } MAP_RUN_INFO_TAKE_S;
 
-typedef struct {
+typedef struct
+{
     uint32 *resourceMap;
     MAP_RUN_INFO_TAKE_S *resourceTake;
 } MAP_RUN_INFO_S;
 
-typedef struct {
+typedef struct
+{
     MAP_INI_INFO_S iniInfo;
     MAP_RUN_INFO_S runInfo;
 } MAP_INFO_S;
@@ -41,10 +45,17 @@ MAP_INFO_S gMapInfo = {{0}};
 
 void MapInfoSet(MAP_INI_INFO_E type, uint32 data)
 {
-    switch (type) {
-        case MAP_INI_INFO_WIDTH: gMapInfo.iniInfo.width = data; break;
-        case MAP_INI_INFO_HIGHT: gMapInfo.iniInfo.high = data; break;
-        case MAP_INI_INFO_RESOURCENUM: gMapInfo.iniInfo.resourceNum = data; break;
+    switch (type)
+    {
+    case MAP_INI_INFO_WIDTH:
+        gMapInfo.iniInfo.width = data;
+        break;
+    case MAP_INI_INFO_HIGHT:
+        gMapInfo.iniInfo.high = data;
+        break;
+    case MAP_INI_INFO_RESOURCENUM:
+        gMapInfo.iniInfo.resourceNum = data;
+        break;
     }
 }
 
@@ -73,7 +84,8 @@ uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
     CHECK_NULL_AUTORETURN(resourceMap);
     CHECK_NULL_AUTORETURN(resourceTake);
 
-    if (resourceTake->using == 0) { /* 说明该节点无人占用，则直接返回 */
+    if (resourceTake->using == 0)
+    { /* 说明该节点无人占用，则直接返回 */
         return SUCCESS;
     }
 
@@ -92,18 +104,25 @@ uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
 
 uint32 MapInfoGet(MAP_INI_INFO_E type)
 {
-    switch (type) {
-        case MAP_INI_INFO_WIDTH: return gMapInfo.iniInfo.width;
-        case MAP_INI_INFO_HIGHT: return gMapInfo.iniInfo.high;
-        case MAP_INI_INFO_RESOURCENUM: return gMapInfo.iniInfo.resourceNum;
-        default: return 0; 
+    switch (type)
+    {
+    case MAP_INI_INFO_WIDTH:
+        return gMapInfo.iniInfo.width;
+    case MAP_INI_INFO_HIGHT:
+        return gMapInfo.iniInfo.high;
+    case MAP_INI_INFO_RESOURCENUM:
+        return gMapInfo.iniInfo.resourceNum;
+    default:
+        return 0;
     }
 }
 
 void MapDestory(void)
 {
-    if (gMapInfo.runInfo.resourceMap != NULL) free(gMapInfo.runInfo.resourceMap);
-    if (gMapInfo.runInfo.resourceTake != NULL) free(gMapInfo.runInfo.resourceTake);
+    if (gMapInfo.runInfo.resourceMap != NULL)
+        free(gMapInfo.runInfo.resourceMap);
+    if (gMapInfo.runInfo.resourceTake != NULL)
+        free(gMapInfo.runInfo.resourceTake);
     (void)memset(&gMapInfo, 0, sizeof(gMapInfo));
 }
 
@@ -134,7 +153,8 @@ uint32 MapResourceReset(void)
 
     memset(gMapInfo.runInfo.resourceMap, 0, gMapInfo.iniInfo.width * gMapInfo.iniInfo.high * sizeof(uint32));
     srand((uint32)time(NULL)); /* 由于下面流程运行的太快，所以不能再for外初始化随机种子 */
-    for (uint32 i = 0; i < gMapInfo.iniInfo.resourceNum; i++) {
+    for (uint32 i = 0; i < gMapInfo.iniInfo.resourceNum; i++)
+    {
         uint32 x = rand() % gMapInfo.iniInfo.width;
         uint32 y = rand() % gMapInfo.iniInfo.high;
         gMapInfo.runInfo.resourceMap[MapDimen2to1(x, y)] += 1;
@@ -148,13 +168,14 @@ uint32 MapResourceReset(void)
 uint32 MapResourceTake(const MAP_RESCOURCE_TAKE_INFO_S *info)
 {
     CHECK_NULL_AUTORETURN(info);
-    CHECK_NULL_AUTORETURN(info->animal.pfunc);
-    CHECK_CONDITION_AUTORETURN(info->animal.size, CHECK_CONDITION_NE, 0);
+    CHECK_NULL_AUTORETURN(info->animal.size);
+    CHECK_CONDITION_AUTORETURN(*(info->animal.size), CHECK_CONDITION_NE, 0);
 
     /* 检查是否会重复注册 */
     uint32 idx = MapDimen2to1(info->point.x, info->point.y);
     MAP_RUN_INFO_TAKE_ANIMAL_S *p = gMapInfo.runInfo.resourceTake[idx].next;
-    while (p != NULL) {
+    while (p != NULL)
+    {
         CHECK_CONDITION_AUTORETURN(p->info.animalId, CHECK_CONDITION_NE, info->animal.animalId);
         p = p->next;
     }
@@ -165,7 +186,6 @@ uint32 MapResourceTake(const MAP_RESCOURCE_TAKE_INFO_S *info)
     node->info.animalId = info->animal.animalId;
     node->info.size = info->animal.size;
     node->info.type = info->animal.type;
-    node->info.pfunc = info->animal.pfunc;
 
     /* 挂接链表 */
     node->next = gMapInfo.runInfo.resourceTake[idx].next;
@@ -179,8 +199,10 @@ uint32 MapResourceTake(const MAP_RESCOURCE_TAKE_INFO_S *info)
 /* 地图更新 */
 uint32 MapRefresh(void)
 {
-    for (uint32 y = 0; y < MapInfoGet(MAP_INI_INFO_HIGHT); y++) {
-        for (uint32 x = 0; x < MapInfoGet(MAP_INI_INFO_WIDTH); x++) {
+    for (uint32 y = 0; y < MapInfoGet(MAP_INI_INFO_HIGHT); y++)
+    {
+        for (uint32 x = 0; x < MapInfoGet(MAP_INI_INFO_WIDTH); x++)
+        {
             uint32 idx = MapDimen2to1(x, y);
             CHECK_RET_AUTORETURN(MapRefreshNode(gMapInfo.runInfo.resourceMap + idx, gMapInfo.runInfo.resourceTake + idx));
         }

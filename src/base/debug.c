@@ -15,7 +15,7 @@
 
 void DebugShowPRINT(const char *str)
 {
-    printf(str);
+    // printf(str);
 }
 
 void DebugShow(DEBUG_LEVEL_E level, const char *format, ...)

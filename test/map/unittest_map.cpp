@@ -7,9 +7,11 @@
 static void UnittestMapResourceNum(uint32 dest)
 {
     uint32 sum = 0;
-    for (uint32 y = 0; y < MapInfoGet(MAP_INI_INFO_HIGHT); y++) {
-        for (uint32 x = 0; x < MapInfoGet(MAP_INI_INFO_WIDTH); x++) {
-            MAP_POINT_S point = {x,y};
+    for (uint32 y = 0; y < MapInfoGet(MAP_INI_INFO_HIGHT); y++)
+    {
+        for (uint32 x = 0; x < MapInfoGet(MAP_INI_INFO_WIDTH); x++)
+        {
+            MAP_POINT_S point = {x, y};
             uint32 resourceSize = 0;
             EXPECT_EQ(MapResourceInfoGet(&point, &resourceSize), SUCCESS);
             sum += resourceSize;
@@ -18,7 +20,8 @@ static void UnittestMapResourceNum(uint32 dest)
     EXPECT_EQ(sum, dest);
 }
 
-TEST(MAP, CreateDestory) {
+TEST(MAP, CreateDestory)
+{
     MAP_POINT_S point = {0};
     uint32 resourceSize = 0;
 
@@ -47,8 +50,8 @@ TEST(MAP, CreateDestory) {
 
     /* 销毁用例 */
     MapDestory();
-    EXPECT_EQ(MapInfoGet(MAP_INI_INFO_WIDTH), 0); /* 创建后数据清零 */
-    EXPECT_EQ(MapInfoGet(MAP_INI_INFO_HIGHT), 0); /* 创建后数据清零 */
+    EXPECT_EQ(MapInfoGet(MAP_INI_INFO_WIDTH), 0);       /* 创建后数据清零 */
+    EXPECT_EQ(MapInfoGet(MAP_INI_INFO_HIGHT), 0);       /* 创建后数据清零 */
     EXPECT_EQ(MapInfoGet(MAP_INI_INFO_RESOURCENUM), 0); /* 创建后数据清零 */
 
     /* 销毁后报错 */
@@ -56,32 +59,21 @@ TEST(MAP, CreateDestory) {
     EXPECT_NE(MapResourceReset(), SUCCESS);
 }
 
-static uint32 gResourceIdx = 0;
-static float gResourceDest[10] = {0};
-
-static uint32 UnitTestAnimalResourceAdd(float resource)
-{
-    EXPECT_NEAR(resource, gResourceDest[gResourceIdx], 0.001);
-    gResourceIdx++;
-    return SUCCESS;
-}
-
 /* 模拟一个生物的消耗过程 */
-TEST(MAP, consume) {
+TEST(MAP, consume)
+{
     EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
     EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
     const uint32 resource = 3; /* 设定的map上的资源 */
     MAP_POINT_S point = {2, 8};
-    MAP_RESCOURCE_TAKE_INFO_S info = {point, {0, 4, MAP_RESOURCE_TAKE_SHARE, UnitTestAnimalResourceAdd}};
+    float size = 4;
+    MAP_RESCOURCE_TAKE_INFO_S info = {point, {0, &size, MAP_RESOURCE_TAKE_SHARE}};
 
     /* 错误入参 */
     EXPECT_NE(MapResourceTake(NULL), SUCCESS);
-    info.animal.pfunc = NULL;
+    size = 0;
     EXPECT_NE(MapResourceTake(&info), SUCCESS);
-    info.animal.pfunc = UnitTestAnimalResourceAdd;
-    info.animal.size = 0;
-    EXPECT_NE(MapResourceTake(&info), SUCCESS);
-    info.animal.size = 4;
+    size = 4;
 
     /* 先预设一个资源 */
     EXPECT_EQ(MapResourceInfoSet(&point, resource), SUCCESS);
@@ -89,13 +81,10 @@ TEST(MAP, consume) {
     /* 占用并更新数据 */
     EXPECT_EQ(MapResourceTake(&info), SUCCESS);
     EXPECT_NE(MapResourceTake(&info), SUCCESS); /* 同一个动物重复占用会报错 */
-    MOCKER(UnitTestAnimalResourceAdd) /* 检测回调函数：入参为3，只会调用一次 */
-        .expects(once())
-        .with(eq(3.0f))
-        .will(returnValue((uint32)0));
+
     EXPECT_EQ(MapRefresh(), SUCCESS);
     EXPECT_EQ(MapRefresh(), SUCCESS); /* 第二次刷新不会有回调 */
-    GlobalMockObject::verify();
+    EXPECT_NEAR(size, 7.0f, 0.0001);
 
     /* 检测资源被消耗掉 */
     uint32 resourceSize = 0;
@@ -106,13 +95,15 @@ TEST(MAP, consume) {
 }
 
 /* 模拟竞争场景下的资源分配 */
-TEST(MAP, conflictShare) {
+TEST(MAP, conflictShare)
+{
     EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
     EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
     const uint32 resource = 3; /* 设定的map上的资源 */
     MAP_POINT_S point = {2, 8};
-    MAP_RESCOURCE_TAKE_INFO_S info0 = {point, {0, 4, MAP_RESOURCE_TAKE_SHARE, UnitTestAnimalResourceAdd}};
-    MAP_RESCOURCE_TAKE_INFO_S info1 = {point, {1, 5, MAP_RESOURCE_TAKE_CONFLICT, UnitTestAnimalResourceAdd}};
+    float size0 = 4, size1 = 5;
+    MAP_RESCOURCE_TAKE_INFO_S info0 = {point, {0, &size0, MAP_RESOURCE_TAKE_SHARE}};
+    MAP_RESCOURCE_TAKE_INFO_S info1 = {point, {1, &size1, MAP_RESOURCE_TAKE_CONFLICT}};
 
     /* 先预设一个资源 */
     EXPECT_EQ(MapResourceInfoSet(&point, resource), SUCCESS);
@@ -120,11 +111,9 @@ TEST(MAP, conflictShare) {
     /* 占用并更新数据 */
     EXPECT_EQ(MapResourceTake(&info0), SUCCESS);
     EXPECT_EQ(MapResourceTake(&info1), SUCCESS);
-    gResourceDest[0] = 1.7565215826034546;
-    gResourceDest[1] = 0.8434782624244689;
-    gResourceIdx = 0;
     EXPECT_EQ(MapRefresh(), SUCCESS);
-    GlobalMockObject::verify();
+    EXPECT_NEAR(size0, 4.8434782624244689, 0.0001);
+    EXPECT_NEAR(size1, 6.7565215826034546, 0.0001);
 
     /* 检测资源被消耗掉 */
     uint32 resourceSize = 0;
