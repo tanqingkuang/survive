@@ -18,7 +18,7 @@ fi
 # 输出测试过程
 if find ./ -name "unittest*exe" -exec ./{} \; > test_rst.txt ; then
     echo -e "\033[32m"
-    grep -e "----------.*tests from" test_rst.txt
+    egrep "\-.*test.*from.*ms total|  PASSED  " test_rst.txt
 else
     echo -e "\033[31m用例运行失败，请检查\033[0m"
     exit 1

@@ -74,7 +74,7 @@ uint32 MapResourceReset(void);
 typedef enum {
     MAP_INI_INFO_WIDTH = 0,
     MAP_INI_INFO_HIGHT,
-    MAP_INI_INFO_RESOURCENUM,
+    MAP_INI_INFO_RESOURCENUM, /* 总资源个数 */
     MAP_INI_INFO_END
 } MAP_INI_INFO_E;
 

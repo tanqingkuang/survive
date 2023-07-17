@@ -7,10 +7,8 @@
 static void UnittestMapResourceNum(uint32 dest)
 {
     uint32 sum = 0;
-    for (uint32 y = 0; y < MapInfoGet(MAP_INI_INFO_HIGHT); y++)
-    {
-        for (uint32 x = 0; x < MapInfoGet(MAP_INI_INFO_WIDTH); x++)
-        {
+    for (uint32 y = 0; y < MapInfoGet(MAP_INI_INFO_HIGHT); y++) {
+        for (uint32 x = 0; x < MapInfoGet(MAP_INI_INFO_WIDTH); x++) {
             MAP_POINT_S point = {x, y};
             uint32 resourceSize = 0;
             EXPECT_EQ(MapResourceInfoGet(&point, &resourceSize), SUCCESS);
@@ -18,6 +16,11 @@ static void UnittestMapResourceNum(uint32 dest)
         }
     }
     EXPECT_EQ(sum, dest);
+}
+
+uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head)
+{
+    return SUCCESS;
 }
 
 TEST(MAP, CreateDestory)
@@ -37,7 +40,6 @@ TEST(MAP, CreateDestory)
 
     /* 正常创建用例 */
     EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
-    EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
     EXPECT_NE(MapCreate("../test/map/cfg.ini"), SUCCESS); /* 第二次创建失败 */
     EXPECT_EQ(MapInfoGet(MAP_INI_INFO_WIDTH), 10);
     EXPECT_EQ(MapInfoGet(MAP_INI_INFO_HIGHT), 20);
@@ -63,7 +65,6 @@ TEST(MAP, CreateDestory)
 TEST(MAP, consume)
 {
     EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
-    EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
     const uint32 resource = 3; /* 设定的map上的资源 */
     MAP_POINT_S point = {2, 8};
     float size = 4;
@@ -84,7 +85,6 @@ TEST(MAP, consume)
 
     EXPECT_EQ(MapRefresh(), SUCCESS);
     EXPECT_EQ(MapRefresh(), SUCCESS); /* 第二次刷新不会有回调 */
-    EXPECT_NEAR(size, 7.0f, 0.0001);
 
     /* 检测资源被消耗掉 */
     uint32 resourceSize = 0;
@@ -98,7 +98,7 @@ TEST(MAP, consume)
 TEST(MAP, conflictShare)
 {
     EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
-    EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
+
     const uint32 resource = 3; /* 设定的map上的资源 */
     MAP_POINT_S point = {2, 8};
     float size0 = 4, size1 = 5;
@@ -112,8 +112,6 @@ TEST(MAP, conflictShare)
     EXPECT_EQ(MapResourceTake(&info0), SUCCESS);
     EXPECT_EQ(MapResourceTake(&info1), SUCCESS);
     EXPECT_EQ(MapRefresh(), SUCCESS);
-    EXPECT_NEAR(size0, 4.8434782624244689, 0.0001);
-    EXPECT_NEAR(size1, 6.7565215826034546, 0.0001);
 
     /* 检测资源被消耗掉 */
     uint32 resourceSize = 0;
@@ -122,12 +120,3 @@ TEST(MAP, conflictShare)
 
     MapDestory();
 }
-
-/* 模拟竞争场景下的赢者通吃,这个对后面模拟意义不大，当前先保留 */
-#if 0
-TEST(MAP, conflictOne) {
-    EXPECT_EQ(MapCreate("../test/map/cfg.ini"), SUCCESS);
-    EXPECT_EQ(RuleCreate("../test/map/cfg.ini"), SUCCESS);
-    MapDestory();
-}
-#endif

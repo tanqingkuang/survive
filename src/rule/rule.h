@@ -13,7 +13,7 @@
 #define RULE_H
 
 #include "base.h"
-#include "map_data.h"
+#include "map_data.h" //TODO rule对map有依赖
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,13 +36,15 @@ typedef struct {
     MAP_POINT_S *point;
     float view;
     float speed;
+    float *size;
 } RULE_FIND_RESOURCE_S;
 
 typedef uint32 (*ANIMAL_CREATE_F)(uint32 id);
 
 typedef struct {
     uint32 type;
-    float *resource;
+    float iniSize;
+    float *size;
     float reproductionTh;
     uint32 idx;
     ANIMAL_CREATE_F pfunc;

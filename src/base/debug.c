@@ -30,8 +30,7 @@ void DebugShow(DEBUG_LEVEL_E level, const char *format, ...)
     va_start(arg, format);
 
     /* 控制颜色 */
-    if (level == DEBUG_LEVEL_ERR)
-    {
+    if (level == DEBUG_LEVEL_ERR) {
         (void)vsprintf(str, "\033[1;31m", 0);
         strcat(out, str);
     }

@@ -88,7 +88,7 @@ uint32 MapRefreshNode(uint32 *resourceMap, MAP_RUN_INFO_TAKE_S *resourceTake)
     }
 
     /* 资源分配 */
-    CHECK_RET_AUTORETURN(RuleResouceAllocate(*resourceMap, resourceTake->next));
+    CHECK_RET_AUTORETURN(RuleResouceAllocate(*resourceMap, resourceTake->next)); // TODO 从这里看出来，map对rule有依赖
 
     /* 资源清零 */
     *resourceMap = 0;
@@ -128,8 +128,8 @@ uint32 MapResourceInfoGet(const MAP_POINT_S *point, uint32 *resourceSize)
     CHECK_NULL_AUTORETURN(point);
     CHECK_NULL_AUTORETURN(resourceSize);
     CHECK_NULL_AUTORETURN(gMapInfo.runInfo.resourceMap);
-    CHECK_CONDITION_AUTORETURN(point->x, CHECK_CONDITION_LE, gMapInfo.iniInfo.width);
-    CHECK_CONDITION_AUTORETURN(point->y, CHECK_CONDITION_LE, gMapInfo.iniInfo.high);
+    CHECK_CONDITION_AUTORETURN(point->x, CHECK_CONDITION_LT, gMapInfo.iniInfo.width);
+    CHECK_CONDITION_AUTORETURN(point->y, CHECK_CONDITION_LT, gMapInfo.iniInfo.high);
     *resourceSize = gMapInfo.runInfo.resourceMap[MapDimen2to1(point->x, point->y)];
     return SUCCESS;
 }
@@ -138,8 +138,8 @@ uint32 MapResourceInfoSet(const MAP_POINT_S *point, uint32 resourceSize)
 {
     CHECK_NULL_AUTORETURN(point);
     CHECK_NULL_AUTORETURN(gMapInfo.runInfo.resourceMap);
-    CHECK_CONDITION_AUTORETURN(point->x, CHECK_CONDITION_LE, gMapInfo.iniInfo.width);
-    CHECK_CONDITION_AUTORETURN(point->y, CHECK_CONDITION_LE, gMapInfo.iniInfo.high);
+    CHECK_CONDITION_AUTORETURN(point->x, CHECK_CONDITION_LT, gMapInfo.iniInfo.width);
+    CHECK_CONDITION_AUTORETURN(point->y, CHECK_CONDITION_LT, gMapInfo.iniInfo.high);
     gMapInfo.runInfo.resourceMap[MapDimen2to1(point->x, point->y)] = resourceSize;
     return SUCCESS;
 }

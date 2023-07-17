@@ -25,10 +25,22 @@ uint32 MapResourceTake(const MAP_RESCOURCE_TAKE_INFO_S *info)
 
 uint32 RuleReproduction(RULE_EPRODUCTION_INFO_S *info)
 {
-    *(info->resource) = 0;
+    *(info->size) = 0;
     return SUCCESS;
 }
 
+/* 说明该节点只有一个资源了 */
+uint32 MapResourceInfoGet(const MAP_POINT_S *point, uint32 *resourceSize)
+{
+    *resourceSize = 1;
+    return SUCCESS;
+}
+
+uint32 MapResourceInfoGetZero(const MAP_POINT_S *point, uint32 *resourceSize)
+{
+    *resourceSize = 0;
+    return SUCCESS;
+}
 #endif
 
 TEST(Animal, CreateDestory)
@@ -67,9 +79,9 @@ TEST(Animal, RunTimes)
 
     EXPECT_EQ(AnimalAllCreate("../test/animal/cfg_only.ini"), SUCCESS);
 
-    MOCKER(MapInfoGet)
-        .expects(exactly(2))
-        .will(returnValue(0ul));
+    MOCKER(MapResourceInfoGet)
+        .stubs()
+        .will(invoke(MapResourceInfoGetZero));
     MOCKER(RuleFindResource)
         .expects(exactly(2))
         .will(returnValue(SUCCESS));
