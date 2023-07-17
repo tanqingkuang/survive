@@ -128,8 +128,8 @@ uint32 MapResourceInfoGet(const MAP_POINT_S *point, uint32 *resourceSize)
     CHECK_NULL_AUTORETURN(point);
     CHECK_NULL_AUTORETURN(resourceSize);
     CHECK_NULL_AUTORETURN(gMapInfo.runInfo.resourceMap);
-    CHECK_CONDITION_AUTORETURN(point->x, CHECK_CONDITION_LE, gMapInfo.iniInfo.width);
-    CHECK_CONDITION_AUTORETURN(point->y, CHECK_CONDITION_LE, gMapInfo.iniInfo.high);
+    CHECK_CONDITION_AUTORETURN(point->x, CHECK_CONDITION_LT, gMapInfo.iniInfo.width);
+    CHECK_CONDITION_AUTORETURN(point->y, CHECK_CONDITION_LT, gMapInfo.iniInfo.high);
     *resourceSize = gMapInfo.runInfo.resourceMap[MapDimen2to1(point->x, point->y)];
     return SUCCESS;
 }
@@ -138,8 +138,8 @@ uint32 MapResourceInfoSet(const MAP_POINT_S *point, uint32 resourceSize)
 {
     CHECK_NULL_AUTORETURN(point);
     CHECK_NULL_AUTORETURN(gMapInfo.runInfo.resourceMap);
-    CHECK_CONDITION_AUTORETURN(point->x, CHECK_CONDITION_LE, gMapInfo.iniInfo.width);
-    CHECK_CONDITION_AUTORETURN(point->y, CHECK_CONDITION_LE, gMapInfo.iniInfo.high);
+    CHECK_CONDITION_AUTORETURN(point->x, CHECK_CONDITION_LT, gMapInfo.iniInfo.width);
+    CHECK_CONDITION_AUTORETURN(point->y, CHECK_CONDITION_LT, gMapInfo.iniInfo.high);
     gMapInfo.runInfo.resourceMap[MapDimen2to1(point->x, point->y)] = resourceSize;
     return SUCCESS;
 }

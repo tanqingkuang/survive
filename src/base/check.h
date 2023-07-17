@@ -26,45 +26,50 @@
         }                                                                      \
     } while (0)
 
-#define CHECK_RET_AUTORETURN(ret)                                        \
-    do {                                                                 \
-        if (ret != SUCCESS) {                                            \
-            return ret;                                                  \
-        }                                                                \
+#define CHECK_RET_AUTORETURN(ret) \
+    do {                          \
+        if (ret != SUCCESS) {     \
+            return ret;           \
+        }                         \
     } while (0)
 
 typedef enum {
     CHECK_CONDITION_EQ = 0, /* == */
-    CHECK_CONDITION_NE, /* != */
-    CHECK_CONDITION_LE, /* < */
-    CHECK_CONDITION_LT, /* <= */
-    CHECK_CONDITION_GE, /* > */
-    CHECK_CONDITION_GT, /* >= */
+    CHECK_CONDITION_NE,     /* != */
+    CHECK_CONDITION_LE,     /* <= */
+    CHECK_CONDITION_LT,     /* < */
+    CHECK_CONDITION_GE,     /* >= */
+    CHECK_CONDITION_GT,     /* > */
     CHECK_CONDITION_END
 } CHECK_CONDITION_E;
 
 inline uint32 static check_condition(uint32 a, CHECK_CONDITION_E type, uint32 b)
 {
-    switch(type) {
-        case CHECK_CONDITION_EQ: return a == b;
-        case CHECK_CONDITION_NE: return a != b;
-        case CHECK_CONDITION_LE: return a < b;
-        case CHECK_CONDITION_LT: return a <= b;
-        case CHECK_CONDITION_GE: return a > b;
-        case CHECK_CONDITION_GT: return a >= b;
+    switch (type) {
+    case CHECK_CONDITION_EQ:
+        return a == b;
+    case CHECK_CONDITION_NE:
+        return a != b;
+    case CHECK_CONDITION_LE:
+        return a <= b;
+    case CHECK_CONDITION_LT:
+        return a < b;
+    case CHECK_CONDITION_GE:
+        return a >= b;
+    case CHECK_CONDITION_GT:
+        return a > b;
     }
     return 0;
 }
 
-#define CHECK_CONDITION_AUTORETURN(a, type, b)                                 \
-    do {                                                                       \
-        if (check_condition(a, type, b) == 0) {                                \
-            const char *str[] = {"==", "!=", "<", "<=", ">", ">="};            \
+#define CHECK_CONDITION_AUTORETURN(a, type, b)                                                 \
+    do {                                                                                       \
+        if (check_condition(a, type, b) == 0) {                                                \
+            const char *str[] = {"==", "!=", "<=", "<", ">=", ">"};                            \
             DebugShow(DEBUG_LEVEL_ERR, "%s[%u] %s %s[%u] not match", #a, a, str[type], #b, b); \
-            return ERR_CONDITION;                                           \
-        }                                                                      \
+            return ERR_CONDITION;                                                              \
+        }                                                                                      \
     } while (0)
-
 
 /* 带默认返回值的检查宏 */
 #define CHECK_NULL_PARAMRETURN(p, errcode)                               \

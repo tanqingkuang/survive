@@ -149,7 +149,9 @@ uint32 AnimalRun(uint32 idx, ANIMAL_INI_INFO_S *iniInfo, ANIMAL_RUN_INFO_S *anim
     RULE_FIND_RESOURCE_S info = {iniInfo->findResourcePlan, &animal->point, iniInfo->view, iniInfo->speed};
     CHECK_RET_AUTORETURN(RuleFindResource(&info));
 
-    if (MapInfoGet(MAP_INI_INFO_RESOURCENUM) != 0) { // 如果该节点有食物则占用
+    uint32 resourceSize = 0;
+    CHECK_RET_AUTORETURN(MapResourceInfoGet(&animal->point, &resourceSize));
+    if (resourceSize != 0) { // 如果该节点有食物则占用
         MAP_RESCOURCE_TAKE_INFO_S info = {
             {animal->point.x, animal->point.y},
             {animal->animalId, &(animal->size), 0}};

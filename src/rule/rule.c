@@ -141,6 +141,10 @@ uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head)
  */
 uint32 RuleFindResource(RULE_FIND_RESOURCE_S *info)
 {
+    CHECK_NULL_AUTORETURN(info);
+    CHECK_NULL_AUTORETURN(info->point);
+    CHECK_CONDITION_AUTORETURN(info->view, CHECK_CONDITION_GE, 1);
+    CHECK_CONDITION_AUTORETURN(info->speed, CHECK_CONDITION_GE, 1);
     return SUCCESS;
 }
 

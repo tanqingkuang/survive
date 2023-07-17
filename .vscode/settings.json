@@ -21,7 +21,8 @@
         "rule.h": "c",
         "string": "c",
         "initializer_list": "cpp",
-        "animal_all.h": "c"
+        "animal_all.h": "c",
+        "sstream": "c"
     },
     "C_Cpp.vcFormat.newLine.beforeOpenBrace.block": "sameLine",
     "C_Cpp.vcFormat.newLine.beforeOpenBrace.function": "sameLine",
