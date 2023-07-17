@@ -22,6 +22,7 @@ extern "C" {
 uint32 AnimalInit(const char *filename, uint32 num);
 void AnimalDestory(uint32 num);
 uint32 AnimalsRun(uint32 idx, uint32 end);
+uint32 AnimalsNumGet(uint32 idx);
 
 #ifdef __cplusplus
 }

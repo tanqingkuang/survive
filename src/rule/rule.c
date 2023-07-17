@@ -131,6 +131,7 @@ uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head)
 
 /** 寻找资源
  * 资源寻找需要知道
+ * * 生物的移动策略
  * * 生物的当前坐标
  * * 生物的视野
  * * 生物的移动速度
@@ -138,13 +139,21 @@ uint32 RuleResouceAllocate(uint32 resourceMap, MAP_RUN_INFO_TAKE_ANIMAL_S *head)
  * 出参
  * * 生物的后续坐标
  */
-uint32 RuleFindResource(void)
+uint32 RuleFindResource(RULE_FIND_RESOURCE_S *info)
 {
     return SUCCESS;
 }
 
-/** 繁殖 */
-uint32 RuleReproduction(void)
+/** 繁殖
+ * 繁殖需要知道
+ * * 繁殖策略
+ * * 生物的繁殖水线
+ * * 生物的create的回调函数
+ * * 生物的能量
+ * 出参
+ * * 生物的能量
+ */
+uint32 RuleReproduction(RULE_EPRODUCTION_INFO_S *info)
 {
     return SUCCESS;
 }

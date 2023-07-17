@@ -49,3 +49,14 @@ uint32 AnimalAllRun(uint32 end)
     }
     return SUCCESS;
 }
+
+uint32 AnimalNumGet(ANIMAL_INFO_E type, uint32 idx)
+{
+    switch (type) {
+    case ANIMALS_NUM_E:
+        return gAnimalAllNum;
+    case ANIMAL_NUM_E:
+        return AnimalsNumGet(idx);
+    }
+    return 0;
+}

@@ -43,6 +43,14 @@ void AnimalAllDestory(void);
 /* end为1说明一天结束 */
 uint32 AnimalAllRun(uint32 end);
 
+typedef enum {
+    ANIMALS_NUM_E = 0,
+    ANIMAL_NUM_E,
+    ANIMAL_INFO_END
+} ANIMAL_INFO_E;
+
+uint32 AnimalNumGet(ANIMAL_INFO_E type, uint32 idx);
+
 #ifdef __cplusplus
 }
 #endif

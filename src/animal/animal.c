@@ -79,10 +79,11 @@ void AnimalInitSet(uint32 type, uint32 value)
     }
 }
 
-uint32 AnimalCreate(ANIMAL_INFO_S *animals)
+uint32 AnimalCreate(uint32 idx)
 {
+    ANIMAL_INFO_S *animals = gAnimalInfo + idx;
     ANIMAL_RUN_INFO_S *animal = (ANIMAL_RUN_INFO_S *)MALLOC_ZERO(sizeof(ANIMAL_RUN_INFO_S));
-    CHECK_NULL_AUTORETURN(AnimalCreate);
+    CHECK_NULL_AUTORETURN(animal);
 
     /* 赋予初值 */
     animal->animalId = gAnimalId;
@@ -117,7 +118,7 @@ uint32 AnimalInit(const char *filename, uint32 num)
     gAnimalId = 0;
     for (uint32 i = 0; i < num; i++) {
         for (uint32 j = 0; j < gAnimalInfo[i].iniInfo.num; j++) {
-            CHECK_RET_AUTORETURN(AnimalCreate(gAnimalInfo + i));
+            CHECK_RET_AUTORETURN(AnimalCreate(i));
         }
     }
     return SUCCESS;
@@ -139,10 +140,14 @@ void AnimalDestory(uint32 num)
 }
 
 /* 每个生物的运行 */
-uint32 AnimalRun(ANIMAL_INI_INFO_S *iniInfo, ANIMAL_RUN_INFO_S *animal, uint32 end)
+uint32 AnimalRun(uint32 idx, ANIMAL_INI_INFO_S *iniInfo, ANIMAL_RUN_INFO_S *animal, uint32 end)
 {
+    CHECK_NULL_AUTORETURN(iniInfo);
+    CHECK_NULL_AUTORETURN(animal);
+
     // 寻找食物并移动
-    // CHECK_RET_AUTORETURN(RuleFindResource(iniInfo, &(animal->point))); /* TODO 这里有个循环依赖的问题 */
+    RULE_FIND_RESOURCE_S info = {iniInfo->findResourcePlan, &animal->point, iniInfo->view, iniInfo->speed};
+    CHECK_RET_AUTORETURN(RuleFindResource(&info));
 
     if (MapInfoGet(MAP_INI_INFO_RESOURCENUM) != 0) { // 如果该节点有食物则占用
         MAP_RESCOURCE_TAKE_INFO_S info = {
@@ -152,7 +157,8 @@ uint32 AnimalRun(ANIMAL_INI_INFO_S *iniInfo, ANIMAL_RUN_INFO_S *animal, uint32 e
     }
 
     if (end == 1) { // 一天结束开始繁殖
-        // CHECK_RET_AUTORETURN(RuleReproduction()); /* TODO待实现 */
+        RULE_EPRODUCTION_INFO_S info = {iniInfo->reproductionPlan, &animal->size, iniInfo->reproductionTh, idx, AnimalCreate};
+        CHECK_RET_AUTORETURN(RuleReproduction(&info)); /* TODO待实现 */
     }
     return SUCCESS;
 }
@@ -162,7 +168,7 @@ uint32 AnimalsRun(uint32 idx, uint32 end)
 {
     ANIMAL_RUN_INFO_S *p = gAnimalInfo[idx].next;
     while (p != NULL) {
-        CHECK_RET_AUTORETURN(AnimalRun(&gAnimalInfo[idx].iniInfo, p, end));
+        CHECK_RET_AUTORETURN(AnimalRun(idx, &gAnimalInfo[idx].iniInfo, p, end));
         if (p->size <= 0) { /* 说明死亡 */
             if (p->prev != NULL)
                 p->prev->next = p->next;
@@ -178,4 +184,9 @@ uint32 AnimalsRun(uint32 idx, uint32 end)
         p = p->next;
     }
     return SUCCESS;
+}
+
+uint32 AnimalsNumGet(uint32 idx)
+{
+    return gAnimalInfo[idx].num;
 }
